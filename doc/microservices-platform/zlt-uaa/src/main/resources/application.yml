@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${zlt.datasource.ip}:3306/oauth-center?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: ${zlt.datasource.username}
+    password: ${zlt.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.central.oauth.model
+  global-config:
+    db-config:
+      id-type: auto
+
+zlt:
+  oauth2:
+    token:
+      store:
+        type: redis
+  swagger:
+    enabled: true
+    title: 认证中心
+    description: 认证中心接口文档
+    version: 1.0
+    base-package: com.central.oauth.controller
+  security:
+    code:
+      # 忽略验证码的应用编号
+      ignoreClientCode: app
+  #多租户配置
+  tenant:
+    enable: true
+    ignoreTables:
+      - oauth_client_details
+  #是否登录同应用同账号互踢
+  uaa:
+    isSingleLogin: false

@@ -1,0 +1,97 @@
+
+#productName: JeeSite Gateway
+
+#======================================#
+#========== Spring settings ===========#
+#======================================#
+
+spring:
+  cloud:
+  
+    # 流量防卫兵
+    sentinel:
+      transport:
+        port: 9311
+        dashboard: 127.0.0.1:9311
+      # 流量防卫兵 Nacos 数据源
+      datasource:
+        ds2.nacos:
+          server-addr: 127.0.0.1:8848
+          data-id: ${spring.application.name}-sentinel
+          group-id: jeesite-cloud-42
+          rule-type: flow
+
+    # 网关路由配置
+    gateway:
+      defaultFilters:
+        - PreserveHostHeader
+      routes:
+      
+        # 测试模块1
+        - id: test1
+          uri: lb://jeesite-cloud-module-test1/js/a/test1
+          predicates:
+            - Path=/js/a/test1/**
+        # 测试模块1（系统监控）
+        - id: test1_def
+          uri: lb://jeesite-cloud-module-test1/js/a/jeesite-cloud-module-test1
+          predicates:
+            - Path=/js/a/jeesite-cloud-module-test1/**
+            
+        # 测试模块2
+        - id: test2
+          uri: lb://jeesite-cloud-module-test2/js/a/test2
+          predicates:
+            - Path=/js/a/test2/**
+        # 测试模块2（系统监控）
+        - id: test1_def
+          uri: lb://jeesite-cloud-module-test2/js/a/jeesite-cloud-module-test2
+          predicates:
+            - Path=/js/a/jeesite-cloud-module-test2/**
+            
+        # 业务流程模块
+        - id: bpm
+          uri: lb://jeesite-cloud-module-bpm/js/a/bpm
+          predicates:
+            - Path=/js/a/bpm/**
+        # 业务流程模块（流程管控）
+        - id: bpm_mgr
+          uri: lb://jeesite-cloud-module-bpm/js/bpm
+          predicates:
+            - Path=/js/bpm/**
+        - id: bpm_api
+          uri: lb://jeesite-cloud-module-bpm/js/inner/api/bpm
+          predicates:
+            - Path=/js/inner/api/bpm/**
+        - id: bpm_static
+          uri: lb://jeesite-cloud-module-bpm/js/static/modules/bpm
+          predicates:
+            - Path=/js/static/modules/bpm/**
+        - id: bpm_static_tag
+          uri: lb://jeesite-cloud-module-bpm/js/static/htmltags/bpm/
+          predicates:
+            - Path=/js/static/htmltags/bpm/**
+        - id: bpm_static_ace
+          uri: lb://jeesite-cloud-module-bpm/js/static/aceEditor/
+          predicates:
+            - Path=/js/static/aceEditor/**
+        # 业务流程模块（系统监控）
+        - id: bpm_def
+          uri: lb://jeesite-cloud-module-bpm/js/a/jeesite-cloud-module-bpm
+          predicates:
+            - Path=/js/a/jeesite-cloud-module-bpm/**
+        # 业务流程模块（OA实例）
+        - id: bpm_oa_test
+          uri: lb://jeesite-cloud-module-bpm/js/a/oa/oaLeave
+          predicates:
+            - Path=/js/a/oa/oaLeave/**
+            
+        # 基础权限模块
+        - id: core
+          uri: lb://jeesite-cloud-module-core/js
+          predicates:
+            - Path=/js/**
+
+#======================================#
+#========== Project settings ==========#
+#======================================#

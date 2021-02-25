@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.zlt</groupId>
+        <artifactId>zlt-demo</artifactId>
+        <version>4.3.0</version>
+    </parent>
+    <artifactId>sso-demo</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <!-- springSecurity单点登录demo -->
+        <module>ss-sso</module>
+        <!-- 前后端分离单点登录demo -->
+        <module>web-sso</module>
+    </modules>
+</project>
