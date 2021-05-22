@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('用户信息列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>用户ID：</p>
+                            <input type="text" name="userId"/>
+                        </li>
+                        <li>
+                            <p>手机号码：</p>
+                            <input type="text" name="userPhone"/>
+                        </li>
+                        <li>
+                            <p>用户昵称：</p>
+                            <input type="text" name="userNickname"/>
+                        </li>
+                        <li>
+                            <p>用户性别：</p>
+                            <select name="userSex" th:with="type=${@dict.getType('sys_user_sex')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li>
+                            <p>微信标识：</p>
+                            <input type="text" name="userOpenid"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="bussiness:userinfo:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var userSexDatas = [[${@dict.getType('sys_user_sex')}]];
+    var prefix = ctx + "bussiness/userinfo";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "用户信息",
+            sortName: "createTime",
+            sortOrder: "desc",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'userId',
+                    title: '用户ID'
+                },
+                {
+                    field: 'userPhone',
+                    title: '手机号码'
+                },
+                {
+                    field: 'userNickname',
+                    title: '用户昵称'
+                },
+                {
+                    field: 'userPhoto',
+                    title: '用户头像',
+                    formatter: function (value) {
+                        if (value) {
+                            return $.operate.showPic(value)
+                        }
+                    }
+                },
+                {
+                    field: 'userSex',
+                    title: '用户性别',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(userSexDatas, value);
+                    }
+                },
+                {
+                    field: 'userBirthday',
+                    title: '用户生日'
+                },
+                {
+                    field: 'userOpenid',
+                    title: '微信标识'
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    sortable: true
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

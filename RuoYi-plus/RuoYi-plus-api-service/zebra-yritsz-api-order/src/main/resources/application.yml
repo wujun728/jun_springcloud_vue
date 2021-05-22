@@ -1,0 +1,16 @@
+server:
+  port: 1215
+# MyBatis
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: com.zebra
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
+#seata
+spring: 
+  cloud: 
+    alibaba: 
+      seata: 
+        tx-service-group: my_ruoyiplus_tx_group

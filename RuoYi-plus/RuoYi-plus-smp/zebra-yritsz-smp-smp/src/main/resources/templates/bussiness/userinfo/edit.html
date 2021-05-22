@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改用户信息')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-userinfo-edit" th:object="${userInfo}">
+            <input name="userId" th:field="*{userId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>手机号码：</label>
+                <div class="col-sm-8">
+                    <input name="userPhone" th:field="*{userPhone}" class="form-control" type="text" required maxlength="15">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">用户昵称：</label>
+                <div class="col-sm-8">
+                    <input name="userNickname" th:field="*{userNickname}" class="form-control" type="text" maxlength="50">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">用户头像：</label>
+                <div class="col-sm-8">
+                    <input name="userPhoto" th:field="*{userPhoto}" class="form-control" type="text" maxlength="255">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">用户性别：</label>
+                <div class="col-sm-8">
+                    <select name="userSex" class="form-control m-b" th:with="type=${@dict.getType('sys_user_sex')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{userSex}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">用户生日：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="userBirthday" th:value="${#dates.format(userInfo.userBirthday, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>微信标识：</label>
+                <div class="col-sm-8">
+                    <input name="userOpenid" th:field="*{userOpenid}" class="form-control" type="text" required maxlength="255">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "bussiness/userinfo";
+        $("#form-userinfo-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-userinfo-edit').serialize());
+            }
+        }
+
+        $("input[name='userBirthday']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

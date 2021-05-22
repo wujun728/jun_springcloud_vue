@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增退款订单')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-commodityorderrefund-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>退款金额：</label>
+                <div class="col-sm-8">
+                    <input name="refundMoney" class="form-control" type="text" required maxlength="36">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>退款状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box">
+                        <input type="radio" name="refundStatus" value="" required>
+                        <label th:for="refundStatus" th:text="未知"></label>
+                    </div>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">退款备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="refundRemarks" class="form-control" maxlength="500"></textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>用户id：</label>
+                <div class="col-sm-8">
+                    <input name="userId" class="form-control" type="text" required maxlength="36">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单号：</label>
+                <div class="col-sm-8">
+                    <input name="orderId" class="form-control" type="text" maxlength="36">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>商户id：</label>
+                <div class="col-sm-8">
+                    <input name="merchantId" class="form-control" type="text" required maxlength="36">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退款时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="refundTime" class="form-control" placeholder="yyyy-MM-dd" type="text" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "bussiness/commodityorderrefund"
+        $("#form-commodityorderrefund-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-commodityorderrefund-add').serialize());
+            }
+        }
+
+        $("input[name='refundTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

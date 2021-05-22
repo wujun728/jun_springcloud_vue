@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.mapper.ProvinceInfoMapper">
+
+	<resultMap type="ProvinceInfo" id="ProvinceInfoResult">
+		<result property="provinceId" column="province_id" />
+		<result property="provinceName" column="province_name" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+
+	<sql id="selectProvinceInfoVo">
+		select province_id, province_name,create_time, update_time
+		from
+		t_province_info
+	</sql>
+
+	<select id="selectProvinceInfoList" parameterType="ProvinceInfo"
+		resultMap="ProvinceInfoResult">
+		<include refid="selectProvinceInfoVo" />
+		<where>
+			<if test="provinceName != null  and provinceName != ''"> and province_name like concat('%', #{provinceName}, '%')
+			</if>
+		</where>
+	</select>
+
+	<select id="selectProvinceInfoById" parameterType="String"
+		resultMap="ProvinceInfoResult">
+		<include refid="selectProvinceInfoVo" />
+		where province_id = #{provinceId}
+	</select>
+
+	<insert id="insertProvinceInfo" parameterType="ProvinceInfo">
+		insert into t_province_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="provinceId != null  and provinceId != ''">province_id,</if>
+			<if test="provinceName != null  and provinceName != ''">province_name,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="updateTime != null ">update_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="provinceId != null  and provinceId != ''">#{provinceId},</if>
+			<if test="provinceName != null  and provinceName != ''">#{provinceName},</if>
+			<if test="createTime != null ">#{createTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
+		</trim>
+	</insert>
+
+	<update id="updateProvinceInfo" parameterType="ProvinceInfo">
+		update t_province_info
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="provinceName != null  and provinceName != ''">province_name = #{provinceName},</if>
+			<if test="createTime != null ">create_time = #{createTime},</if>
+			<if test="updateTime != null ">update_time = #{updateTime},</if>
+		</trim>
+		where province_id = #{provinceId}
+	</update>
+
+	<delete id="deleteProvinceInfoById" parameterType="String">
+		delete from
+		t_province_info where province_id = #{provinceId}
+	</delete>
+
+	<delete id="deleteProvinceInfoByIds" parameterType="String">
+		delete from t_province_info where province_id in
+		<foreach item="provinceId" collection="array" open="("
+			separator="," close=")">
+			#{provinceId}
+		</foreach>
+	</delete>
+
+</mapper>

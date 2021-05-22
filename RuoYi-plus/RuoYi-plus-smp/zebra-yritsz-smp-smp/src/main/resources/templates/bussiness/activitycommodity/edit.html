@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改参与活动商品')"/>
+    <th:block th:include="include :: datetimepicker-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-activitycommodity-edit" th:object="${activityCommodity}">
+        <input name="id" th:field="*{id}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>商品名称：</label>
+            <div class="col-sm-8">
+                <input disabled th:field="*{commodityName}" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>活动数量：</label>
+            <div class="col-sm-8">
+                <input name="commodityCount" th:field="*{commodityCount}" class="form-control" type="text" required
+                       maxlength="5">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>开始时间：</label>
+            <div class="col-sm-8">
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input name="startTime" id="startTime"
+                           th:value="${#dates.format(activityCommodity.startTime, 'yyyy-MM-dd HH:mm:ss')}"
+                           class="form-control" placeholder="yyyy-MM-dd" type="text" required readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>结束时间：</label>
+            <div class="col-sm-8">
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input name="endTime" id="endTime"
+                           th:value="${#dates.format(activityCommodity.endTime, 'yyyy-MM-dd HH:mm:ss')}"
+                           class="form-control" placeholder="yyyy-MM-dd" type="text" required readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>团购人数：</label>
+            <div class="col-sm-8">
+                <input name="buyersNumber" th:field="*{buyersNumber}" class="form-control" type="text" required
+                       maxlength="5">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>优惠费用(分)：</label>
+            <div class="col-sm-8">
+                <input isMmoney="isMmoney" name="preferential" th:field="*{preferential}" class="form-control"
+                       type="text" required
+                       maxlength="8">
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: datetimepicker-js"/>
+<script type="text/javascript">
+    var prefix = ctx + "bussiness/activitycommodity";
+    $("#form-activitycommodity-edit").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-activitycommodity-edit').serialize());
+        }
+    }
+
+    $(function () {
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#startTime',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#endTime',
+                type: 'datetime',
+                trigger: 'click'
+            });
+        });
+    });
+</script>
+</body>
+</html>

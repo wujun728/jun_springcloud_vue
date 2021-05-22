@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('文章模板列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>模板名称：</p>
+                            <input type="text" name="templeName"/>
+                        </li>
+                        <li>
+                            <p>审核状态：</p>
+                            <select name="auditState" th:with="type=${@dict.getType('cms_audit_state')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="templateList()"
+               shiro:hasPermission="bussiness_cms:articletemplate:list">
+                <i class="fa fa-plus"></i> 预览列表
+            </a>
+            <a class="btn btn-success" onclick="$.operate.addFull()"
+               shiro:hasPermission="bussiness_cms:articletemplate:add">
+                <i class="fa fa-plus"></i> 添加
+            </a>
+            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.editFull()"
+               shiro:hasPermission="bussiness_cms:articletemplate:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="bussiness_cms:articletemplate:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var examineFlag = [[${@permission.hasPermi('bussiness_cms:articletemplate:examine')}]];
+    var editFlag = [[${@permission.hasPermi('bussiness_cms:articletemplate:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('bussiness_cms:articletemplate:remove')}]];
+    var auditStateDatas = [[${@dict.getType('cms_audit_state')}]];
+    var prefix = ctx + "bussiness_cms/articletemplate";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "文章模板",
+            sortName: "createTime",
+            sortOrder: "desc",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'templeId',
+                    title: '模板id',
+                    visible: false
+                },
+                {
+                    field: 'templeName',
+                    title: '模板名称'
+                },
+                {
+                    field: 'templeContent',
+                    title: '模板内容',
+                    visible: false
+                },
+                {
+                    field: 'auditState',
+                    title: '审核状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(auditStateDatas, value);
+                    }
+                },
+                {
+                    field: 'auditReason',
+                    title: '审核意见'
+                },
+                {
+                    field: 'auditTime',
+                    title: '审核时间'
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    sortable: true,
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间',
+                    sortable: true,
+                },
+                {
+                    field: 'updateBy',
+                    title: '更新人',
+                    visible: false
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-primary btn-xs ' + examineFlag+ '" href="javascript:void(0)" onclick="examine(\'' + row.templeId + '\')"><i class="fa fa-credit-card"></i>审核</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.templeId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.templeId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+    function examine(templeId){
+        $.modal.open("文章模板审核",prefix + "/examine/"+templeId);
+    }
+
+    function templateList(){
+        var url = prefix + '/templateList';
+        $.modal.openTab("文章模板列表", url);
+    }
+</script>
+</body>
+</html>

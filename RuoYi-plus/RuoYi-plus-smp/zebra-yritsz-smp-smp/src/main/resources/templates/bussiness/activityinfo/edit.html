@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改活动信息')"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-activityinfo-edit" th:object="${activityInfo}">
+        <input name="activityId" th:field="*{activityId}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>活动名称：</label>
+            <div class="col-sm-8">
+                <input name="activityName" th:field="*{activityName}" class="form-control" type="text" required
+                       maxlength="20">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">类别限制：</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input id="treeId" name="categoryId" type="hidden" th:value="${activityInfo.categoryId}"/>
+                    <input class="form-control" type="text" onclick="selectCommoditycategoryTree()" id="treeName"
+                           readonly="true" th:value="${categoryName}"  >
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>活动信息：</label>
+            <div class="col-sm-8">
+                <textarea name="activityInfo" class="form-control" required
+                          maxlength="500">[[*{activityInfo}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>活动类型：</label>
+            <div class="col-sm-8">
+                <select name="activityType" class="form-control m-b" th:with="type=${@dict.getType('t_activity_type')}"
+                        required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                            th:field="*{activityType}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>活动属性：</label>
+            <div class="col-sm-8">
+                <div class="radio-box" th:each="dict : ${@dict.getType('t_activity_attribute')}">
+                    <input type="radio" th:id="${'activityAttribute_' + dict.dictCode}" name="activityAttribute"
+                           th:value="${dict.dictValue}" th:field="*{activityAttribute}" required>
+                    <label th:for="${'activityAttribute_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>排序：</label>
+            <div class="col-sm-8">
+                <input name="zebraOrder" th:field="*{zebraOrder}" class="form-control" type="text" required
+                       maxlength="500">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>活动图片：</label>
+            <div class="col-sm-8">
+                <input class="file" type="file" multiple data-min-file-count="1"
+                       accept="image/*" data-theme="fas" id="pic_file" name="pic_file">
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：按照4:3比例上传，否则会影响用户体验</span>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script type="text/javascript">
+    var img = '[[${activityInfo.activityImg}]]';
+    $("#pic_file")
+        .fileinput(
+            {
+                initialPreview: [ //预览图片的设置
+                    '<img src="'
+                    + ctx + 'profile' + img
+                    + '" alt="活动图片" class="file-preview-image" style="width:auto;height:auto;max-width:100%;max-height:100%;">']
+            });
+
+    var prefix = ctx + "bussiness/activityinfo";
+    $("#form-activityinfo-edit").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var formdata = new FormData(document.getElementById("form-activityinfo-edit"));
+            $.operate.saveImg(prefix + "/edit", formdata);
+        }
+    }
+
+    /*产品类别-新增-选择父部门树*/
+    function selectCommoditycategoryTree() {
+        var options = {
+            title: '产品类别选择',
+            width: "380",
+            url: ctx + "bussiness/commoditycategory/selectCommoditycategoryTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree, true)) {
+            var body = layer.getChildFrame('body', index);
+            var goodId = body.find('#treeId').val();
+            $("#treeId").val(goodId);
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+    }
+</script>
+</body>
+</html>

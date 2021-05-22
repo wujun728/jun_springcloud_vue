@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.mapper.CommodityCategoryMapper">
+
+	<resultMap type="CommodityCategory" id="CommodityCategoryResult">
+		<result property="categoryId" column="category_id" />
+		<result property="categoryName" column="category_name" />
+		<result property="categoryAttribute" column="category_attribute" />
+		<result property="categoryParid" column="category_parid" />
+		<result property="categoryIcon" column="category_icon" />
+		<result property="zebraOrder" column="zebra_order" />
+		<result property="merchantId" column="merchant_id" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="updateBy" column="update_by" />
+	</resultMap>
+
+	<sql id="selectCommodityCategoryVo">
+		select category_id, category_name, category_attribute,
+		category_parid,
+		category_icon, zebra_order, merchant_id, create_time,
+		update_time,
+		update_by from t_commodity_category
+	</sql>
+
+	<select id="selectCommodityCategoryList" parameterType="CommodityCategory"
+		resultMap="CommodityCategoryResult">
+		<include refid="selectCommodityCategoryVo" />
+		<where>
+			<if test="categoryName != null  and categoryName != ''"> and category_name like concat('%', #{categoryName}, '%')</if>
+			<if test="categoryAttribute != null "> and category_attribute like concat('%',
+				#{categoryAttribute}, '%')</if>
+			<if test="categoryParid != null  and categoryParid != ''"> and category_parid like concat('%', #{categoryParid},
+				'%')</if>
+			<if test="categoryIcon != null  and categoryIcon != ''"> and category_icon like concat('%', #{categoryIcon}, '%')</if>
+			<if test="zebraOrder != null "> and zebra_order like concat('%', #{zebraOrder}, '%')</if>
+			<if test="merchantId != null  and merchantId != ''"> and merchant_id like concat('%', #{merchantId}, '%')</if>
+			<if test="createTime != null "> and create_time like concat('%', #{createTime}, '%')</if>
+			<if test="updateTime != null "> and update_time like concat('%', #{updateTime}, '%')</if>
+			<if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
+		</where>
+		order by category_parid ,zebra_order
+	</select>
+
+	<select id="selectCommodityCategoryById" parameterType="Long"
+		resultMap="CommodityCategoryResult">
+		<include refid="selectCommodityCategoryVo" />
+		where category_id = #{categoryId}
+	</select>
+
+	<insert id="insertCommodityCategory" parameterType="CommodityCategory">
+		insert into t_commodity_category
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="categoryId != null  and categoryId != ''">category_id,</if>
+			<if test="categoryName != null  and categoryName != ''">category_name,</if>
+			<if test="categoryAttribute != null ">category_attribute,</if>
+			<if test="categoryParid != null  and categoryParid != ''">category_parid,</if>
+			<if test="categoryIcon != null  and categoryIcon != ''">category_icon,</if>
+			<if test="zebraOrder != null ">zebra_order,</if>
+			<if test="merchantId != null  and merchantId != ''">merchant_id,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="updateTime != null ">update_time,</if>
+			<if test="updateBy != null  and updateBy != ''">update_by,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="categoryId != null  and categoryId != ''">#{categoryId},</if>
+			<if test="categoryName != null  and categoryName != ''">#{categoryName},</if>
+			<if test="categoryAttribute != null ">#{categoryAttribute},</if>
+			<if test="categoryParid != null  and categoryParid != ''">#{categoryParid},</if>
+			<if test="categoryIcon != null  and categoryIcon != ''">#{categoryIcon},</if>
+			<if test="zebraOrder != null ">#{zebraOrder},</if>
+			<if test="merchantId != null  and merchantId != ''">#{merchantId},</if>
+			<if test="createTime != null ">#{createTime},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+		</trim>
+	</insert>
+
+	<update id="updateCommodityCategory" parameterType="CommodityCategory">
+		update t_commodity_category
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="categoryName != null  and categoryName != ''">category_name = #{categoryName},</if>
+			<if test="categoryAttribute != null ">category_attribute = #{categoryAttribute},</if>
+			<if test="categoryParid != null  and categoryParid != ''">category_parid = #{categoryParid},</if>
+			<if test="categoryIcon != null  and categoryIcon != ''">category_icon = #{categoryIcon},</if>
+			<if test="zebraOrder != null ">zebra_order = #{zebraOrder},</if>
+			<if test="merchantId != null  and merchantId != ''">merchant_id = #{merchantId},</if>
+			<if test="createTime != null ">create_time = #{createTime},</if>
+			<if test="updateTime != null ">update_time = #{updateTime},</if>
+			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+		</trim>
+		where category_id = #{categoryId}
+	</update>
+
+	<delete id="deleteCommodityCategoryById" parameterType="String">
+		delete
+		from t_commodity_category where category_id = #{categoryId}
+	</delete>
+
+	<delete id="deleteCommodityCategoryByIds" parameterType="String">
+		delete from t_commodity_category where category_id in
+		<foreach item="categoryId" collection="array" open="("
+			separator="," close=")">
+			#{categoryId}
+		</foreach>
+	</delete>
+
+</mapper>

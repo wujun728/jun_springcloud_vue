@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <th:block th:include="include :: header('文章模板列表')"/>
+</head>
+<body class="gray-bg">
+<div id="main" class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div id="c1" class="col-sm-4">
+
+
+        </div>
+        <div id="c2" class="col-sm-4">
+
+        </div>
+        <div id="c3" class="col-sm-4">
+
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+
+<script type="text/javascript">
+    var prefix = ctx + "bussiness_cms/articletemplate";
+    var pageNum = 1;
+    var url = prefix + "/list";
+    var totalPages;
+
+    function selectMinColumn() {
+        var h1 = $("#c1").height();
+        var h2 = $("#c2").height();
+        var h3 = $("#c3").height();
+        var arr = [];
+        arr.push(h1);
+        arr.push(h2);
+        arr.push(h3);
+        var minData = arr[0];
+        var index = 0;
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] < minData) {
+                minData = arr[i];  // 最小值
+                index = i;
+            }
+        }
+        return "c" + (index + 1);//返回高度最小的元素id
+
+    }
+
+    function initList() {
+        $.ajax({
+            url: url,
+            type: "post",
+            dataType: "json",
+            data: {"pageNum": pageNum, "pageSize": 10},
+            success: function (json) {
+                if (json.code != 0 && json.code != '0') {
+                    $.modal.alertWarning(json.msg);
+                } else {
+                    totalPages = (json.total + 9) / 10;
+                    var data = json.rows;
+                    $.each(data, function (i, v) {
+                        var html = "";
+                        html += " <div class=\"ibox\">" +
+                            "                    <div class=\"ibox-title\">";
+                        html += "                        <span class=\"label label-primary pull-right\"></span>";
+                        html += "                        <h5>" + v["templeName"] + "</h5>" +
+                            "                    </div>" +
+                            "                    <div style='padding: 8px 20px 20px 20px;' class=\"ibox-content\">" +
+                            "                        <h4>效果预览:</h4>" +
+                            "                        <p>" + v["templeContent"] + "</p>" +
+                            "                        <div style='    border-top: 1px solid #ddd;    padding-top: 20px;' class=\"row  m-t-sm\">" +
+                            "                            <div class=\"col-sm-6\">" +
+                            "                                作者：<div style=\"display: inline-block\" class=\"font-bold\">zebra</div>" +
+                            "                            </div>" +
+                            "                            <div class=\"col-sm-6 text-right\">" +
+                            "                                日期：<div style=\"display: inline-block\"  class=\"font-bold\">2020年7月30日 v5.0.1演示版</div>" +
+                            "                            </div>" +
+                            "                        </div>" +
+                            "                    </div>" +
+                            "                </div>";
+
+                        var id = selectMinColumn();
+                        $("#" + id).append(html);
+                    });
+                }
+            }
+        });
+    }
+
+    $(function () {
+        initList();
+        //alert(selectMinColumn());
+        $(window).scroll(
+            function () {
+                var scrollTop = $(this).scrollTop();
+                var scrollHeight = $(document).height();
+                var windowHeight = $(this).height();
+                if (scrollTop + windowHeight == scrollHeight) {
+                    pageNum++;
+                    if (pageNum > totalPages) {
+                        layer.msg("已经加载了全部数据!");
+                    } else {
+                        initList();
+                    }
+
+                }
+            });
+    })
+</script>
+</body>
+</html>

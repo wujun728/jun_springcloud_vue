@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增商户信息')"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-merchantinfo-add">
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>商户名称：</label>
+            <div class="col-sm-4">
+                <input name="merchantName" class="form-control" type="text"
+                       required maxlength="20">
+            </div>
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>商户地址：</label>
+            <div class="col-sm-4">
+                <input name="merchantAddress" class="form-control" type="text"
+                       required maxlength="30">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>所属部门：</label>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <input name="deptId" type="hidden" id="treeId"
+                           th:value="${treeId}"/> <input name="deptName"
+                                                         readonly="readonly" onclick="selectDeptTree()" id="treeName"
+                                                         type="text" placeholder="请选择归属部门" class="form-control"
+                                                         required>
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span></div>
+            </div>
+            <label class="col-sm-2 control-label">信用代码：</label>
+            <div class="col-sm-4">
+                <input name="merchantCreditCode" class="form-control" type="text"
+                       maxlength="50">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>商户属性：</label>
+            <div class="col-sm-4">
+                <select name="merchantAttribute" class="form-control m-b"
+                        th:with="type=${@dict.getType('t_merchant_attribute')}" required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                            th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>商户状态：</label>
+            <div class="col-sm-4">
+                <div class="radio-box"
+                     th:each="dict : ${@dict.getType('t_merchant_status')}">
+                    <input type="radio" th:id="${'merchantStatus_' + dict.dictCode}"
+                           name="merchantStatus" th:value="${dict.dictValue}"
+                           th:checked="${dict.isDefault}" required> <label
+                        th:for="${'merchantStatus_' + dict.dictCode}"
+                        th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>所在省份：</label>
+            <div class="col-sm-4">
+                <select id="provinceId" class="form-control" name="provinceId" required onchange="listByProvinceId();">
+                    <option value="">请选择所在省份</option>
+                    <option th:each="post:${provinceList}"
+                            th:value="${post.provinceId}"
+                            th:text="${post.provinceName}"></option>
+                </select>
+            </div>
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>所在城市：</label>
+            <div class="col-sm-4">
+                <select id="cityCode" class="form-control" name="cityCode" required>
+                    <option value="">请选择所在城市</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>商户简介：</label>
+            <div class="col-sm-4">
+                <textarea name="merchantBrief" class="form-control" required></textarea>
+
+            </div>
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>商户介绍：</label>
+            <div class="col-sm-4">
+                <textarea name="merchantIntroduce" class="form-control" required></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span
+                    style="color: red;">*</span>商户图片：</label>
+            <div class="col-sm-4">
+                <input class="file" type="file" multiple data-min-file-count="1"
+                       accept="image/*" data-theme="fas" id="pic_file" name="pic_file">
+            </div>
+            <label class="col-sm-2 control-label">商户营业执照：</label>
+            <div class="col-sm-4">
+                <input class="file" type="file" multiple data-min-file-count="1"
+                       accept="image/*" data-theme="fas" id="pic_file2" name="pic_file2">
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：请上传正确的营业执照，否则将无法通过审核</span>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+
+<script type="text/javascript">
+    var prefix = ctx + "bussiness/merchantinfo"
+    $("#form-merchantinfo-add").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var pic_file = $("#pic_file").val();
+            if (!pic_file) {
+                $.modal.alertWarning("请上传正确的商户图片。");
+                return;
+            }
+            var formdata = new FormData(document.getElementById("form-merchantinfo-add"));
+            $.operate.saveImg(prefix + "/add", formdata);
+        }
+    }
+
+    /*用户管理-新增-选择部门树*/
+    function selectDeptTree() {
+        var treeId = $("#treeId").val();
+        var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+        var url = ctx + "system/dept/selectDeptTree/" + deptId;
+        var options = {
+            title: '选择部门',
+            width: "380",
+            url: url,
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+    }
+
+    function listByProvinceId() {
+        var provinceId = $("#provinceId").val();
+        if (!provinceId)
+            provinceId = '-1';
+        var html = '<option value="">请选择所在城市</option>';
+        $.ajax({
+            url: ctx + "bussiness/cityinfo/listByProvinceId",
+            data: {"provinceId": provinceId},
+            dataType: "json",
+            type: "post",
+            success: function (result) {
+                $.each(
+                    result.data,
+                    function (commentIndex, comment) {
+                        html += "<option value='" + comment.cityCode + "'>"
+                            + comment.cityName
+                            + "</option>";
+                    });
+                $("#cityCode").html(html);
+            }, error: function () {
+                $.modal.alertError("服务器发生错误，请稍后重试！");
+            }
+        })
+    }
+</script>
+</body>
+</html>

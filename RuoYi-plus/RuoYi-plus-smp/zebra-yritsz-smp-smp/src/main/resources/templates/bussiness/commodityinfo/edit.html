@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改产品信息')"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-commodityinfo-edit" th:object="${commodityInfo}">
+        <input name="commodityId" th:field="*{commodityId}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>所属商户：</label>
+            <div class="col-sm-4">
+                <select id="merchantId" class="form-control" name="merchantId" disabled th:field="*{merchantId}">
+                    <option th:each="post:${mts}"
+                            th:value="${post.merchantId}"
+                            th:text="${post.merchantName}"></option>
+                </select></li>
+            </div>
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>产品名称：</label>
+            <div class="col-sm-4">
+                <input name="commodityName" class="form-control" type="text" required maxlength="50"
+                       th:field="*{commodityName}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>产品简介：</label>
+            <div class="col-sm-4">
+                <textarea name="commodityBrief" class="form-control" required
+                          maxlength="100">[[*{commodityBrief}]]</textarea>
+            </div>
+            <label class="col-sm-2 control-label">产品详情：</label>
+            <div class="col-sm-4">
+                <textarea name="commodityIntroduce" class="form-control" required maxlength="1000">[[*{commodityIntroduce}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品费用(分)：</label>
+            <div class="col-sm-4">
+                <input name="commodityMoeny" class="form-control" type="text" required isMoney="isMoney" maxlength="8"
+                       th:field="*{commodityMoeny}">
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：规格存在费用时，该项为市面值非支付金额</span>
+            </div>
+            <label class="col-sm-2 control-label">商品类型：</label>
+            <div class="col-sm-4">
+                <select name="commodityType" class="form-control m-b"
+                        th:with="type=${@dict.getType('t_commodity_type')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                            th:field="*{commodityType}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品运费(分)：</label>
+            <div class="col-sm-4">
+                <input placeholder="输入0为免费" name="commodityFreight" class="form-control" type="text" required
+                       isMoney="isMoney" maxlength="8" th:field="*{commodityFreight}">
+            </div>
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品属性：</label>
+            <div class="col-sm-4">
+                <select name="commodityAttribute" class="form-control m-b"
+                        th:with="type=${@dict.getType('t_merchant_attribute')}" required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                            th:field="*{commodityAttribute}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品状态：</label>
+            <div class="col-sm-4">
+                <div class="radio-box" th:each="dict : ${@dict.getType('t_merchant_status')}">
+                    <input type="radio" th:id="${'commodityStatus_' + dict.dictCode}" name="commodityStatus"
+                           th:value="${dict.dictValue}" th:checked="${dict.isDefault}" required
+                           th:field="*{commodityStatus}">
+                    <label th:for="${'commodityStatus_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：审核通过产品切勿遵守平台规则，以免商户被封</span>
+            </div>
+
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品类别：</label>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <input id="treeId" name="categoryId" type="hidden" th:value="${commodityInfo.categoryId}"/>
+                    <input class="form-control" type="text" onclick="selectCommoditycategoryTree()" id="treeName"
+                           readonly="true" th:value="${categoryName}" required>
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>库存总量：</label>
+            <div class="col-sm-4">
+                <input name="commodityCount" class="form-control" type="text" required maxlength="5"
+                       isNumber="isNumber" th:field="*{commodityCount}">
+            </div>
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>排序：</label>
+            <div class="col-sm-4">
+                <input name="zebraOrder" class="form-control" type="text" required maxlength="3" isNumber="isNumber"
+                       th:field="*{zebraOrder}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>产品图片：</label>
+            <div class="col-sm-4">
+                <input class="file" type="file" multiple data-min-file-count="1"
+                       accept="image/*" data-theme="fas" id="pic_file" name="pic_file">
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：按照4:3比例上传，否则会影响用户体验</span>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script type="text/javascript">
+    var img = '[[${commodityInfo.commodityImg}]]';
+    $("#pic_file")
+        .fileinput(
+            {
+                initialPreview: [ //预览图片的设置
+                    '<img src="'
+                    + ctx + 'profile' + img
+                    + '" alt="商品图片" class="file-preview-image" style="width:auto;height:auto;max-width:100%;max-height:100%;">']
+            });
+
+    var prefix = ctx + "bussiness/commodityinfo";
+    $("#form-commodityinfo-edit").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var formdata = new FormData(document.getElementById("form-commodityinfo-edit"));
+            $.operate.saveImg(prefix + "/edit", formdata);
+        }
+    }
+
+
+    /*产品类别-新增-选择父部门树*/
+    function selectCommoditycategoryTree() {
+        var options = {
+            title: '产品类别选择',
+            width: "380",
+            url: ctx + "bussiness/commoditycategory/selectCommoditycategoryTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree, true)) {
+            var body = layer.getChildFrame('body', index);
+            var goodId = body.find('#treeId').val();
+            $("#treeId").val(goodId);
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+    }
+</script>
+</body>
+</html>

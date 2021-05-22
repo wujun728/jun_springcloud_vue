@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增素材信息')"/>
+    <th:block th:include="include :: select2-css"/>
+    <th:block th:include="include :: bootstrap-fileinput-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-material-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>所属商户：</label>
+            <div class="col-sm-8">
+                <select id="merchantId" class="form-control" name="merchantId">
+                    <option value="">----系统商户----</option>
+                    <option th:each="post:${mts}"
+                            th:value="${post.merchantId}"
+                            th:text="${post.merchantName}"></option>
+                </select></li>                </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>所属分组：</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input id="treeId" name="groupId" class="form-control" required type="hidden">
+                    <input placeholder="请选择分组" class="form-control" required type="text" onclick="selectMaterialGroupTree()" id="treeName"
+                           readonly="true">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>素材名称：</label>
+            <div class="col-sm-8">
+                <input name="materialName" class="form-control" type="text" required maxlength="20">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>素材类型：</label>
+            <div class="col-sm-8">
+                <select name="materialType" class="form-control m-b"
+                        th:with="type=${@dict.getType('csm_material_type')}" required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">素材描述：</label>
+            <div class="col-sm-8">
+                <input name="materialDescription" class="form-control" type="text" maxlength="20">
+            </div>
+        </div>
+       <!-- <div class="form-group">
+            <label class="col-sm-3 control-label">审核状态：</label>
+            <div class="col-sm-8">
+                <select name="auditState" class="form-control m-b" th:with="type=${@dict.getType('cms_audit_state')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">审核意见：</label>
+            <div class="col-sm-8">
+                <input name="auditReason" class="form-control" type="text" maxlength="20">
+            </div>
+        </div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">可用状态：</label>
+            <div class="col-sm-8">
+                <div class="radio-box" th:each="dict : ${@dict.getType('sms_use_state')}">
+                    <input type="radio" th:id="${'useState_' + dict.dictCode}" name="useState"
+                           th:value="${dict.dictValue}" th:checked="${dict.isDefault}">
+                    <label th:for="${'useState_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+                <label class="col-sm-3 control-label">素材图片：</label>
+                <div class="col-sm-8">
+                    <div class="file-loading">
+                        <input class="file" type="file" multiple data-min-file-count="1"
+                               accept="image/*" data-theme="fas" id="pic_file" name="pic_file">
+                    </div>
+                    <span class="help-block m-b-none"><i
+                            class="fa fa-info-circle"></i> 提示：请上传16:9或4:3常用比例图片，否则会影响用户体验</span>
+                </div>
+            </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: select2-js"/>
+<th:block th:include="include :: bootstrap-fileinput-js" />
+<script type="text/javascript">
+    var prefix = ctx + "bussiness_cms/material"
+    $("#form-material-add").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var pic_file = $("#pic_file").val();
+            if (!pic_file) {
+                $.modal.alertWarning("请上传素材图片。");
+                return;
+            }
+            var formdata = new FormData(document.getElementById("form-material-add"));
+            $.operate.saveImg(prefix + "/add", formdata);
+        }
+    }
+
+    /*素材分组-新增-选择父部门树*/
+    function selectMaterialGroupTree() {
+        var options = {
+            title: '素材组别择',
+            width: "380",
+            url: ctx + "bussiness_cms/materialgroup" + "/selectMaterialGroupTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero) {
+        var body = layer.getChildFrame('body', index);
+        $("#treeId").val(body.find('#treeId').val());
+        $("#treeName").val(body.find('#treeName').val());
+        layer.close(index);
+    }
+</script>
+</body>
+</html>

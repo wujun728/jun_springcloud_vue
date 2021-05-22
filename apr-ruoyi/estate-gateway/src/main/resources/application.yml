@@ -1,0 +1,30 @@
+server:
+  port: 9011
+
+spring:
+  application:
+    name: estate-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true #开启注册中心路由功能
+          lower-case-service-id: true # 服务id为true --> 这样小写服务就可访问了
+
+      routes:
+        - id: estate-auth
+          uri: lb://estate-auth #对lb开头的url进行负载均衡操作
+          predicates:
+            - Path=/login,/getInfo,/getRouters,/logout
+
+        - id: estate-modules-user
+          uri: lb://estate-user
+          predicates:
+            - Path=/system/**
+
+#          filters：
+#          - RewritePath=/api/(?<segment>.*),/$\{segment}

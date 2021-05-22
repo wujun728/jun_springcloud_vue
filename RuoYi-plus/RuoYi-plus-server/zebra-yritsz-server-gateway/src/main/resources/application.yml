@@ -1,0 +1,47 @@
+##################################eureka配置#########################################
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+##################################项目配置############################################
+#uri以lb://开头（lb代表从注册中心获取服务），后面接的就是你需要转发到的服务名称
+consumer:
+  uri: lb://service-api-consumer
+consumer2:
+  uri: lb://service-api-consumer2
+#spring gateway配置
+spring:
+  application:
+    name: zebra-yritsz-gateway
+  cloud:
+    gateway:
+      routes:
+      - id: service-api-consumer
+        uri: ${consumer.uri}
+        predicates:
+        - Path=/consumer/**
+        filters:
+        - StripPrefix=1 #去掉Path中第一个节点
+        - name: Retry
+          args:
+            retries: 2 #重试次数
+      - id: service-api-consumer
+        uri: ${consumer2.uri}
+        predicates:
+        - Path=/consumer2/**
+        filters:
+        - StripPrefix=1 #去掉Path中第一个节点
+        - name: Retry
+          args:
+            retries: 2 #重试次数
+server:
+  port: 1010
+
+  #logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.ipc.netty: DEBUG
