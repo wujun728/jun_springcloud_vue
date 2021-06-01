@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wms.oms.mapper.ProductMapper">
+
+    <resultMap type="com.wms.oms.domain.Product" id="ProductResult">
+        <result property="id"    column="id"    />
+        <result property="sn"    column="sn"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="specList" column="spec_list" jdbcType="LONGVARCHAR"
+                javaType="java.util.ArrayList" typeHandler="com.wms.oms.handlers.SpecAttrListHandler"/>
+        <result property="categoryId"    column="category_id"    />
+        <result property="isSpec"  column="is_spec"/>
+        <result property="productName"    column="product_name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="tenantId"    column="tenant_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <association property="productCategory" javaType="com.wms.oms.domain.ProductCategory" resultMap="ProductCategoryResult"/>
+        <collection property="productSkuList" ofType="com.wms.oms.domain.ProductSku" resultMap="ProductSkuResult"/>
+    </resultMap>
+
+    <resultMap type="com.wms.oms.domain.ProductCategory" id="ProductCategoryResult">
+        <result property="categoryName"    column="category_name"    />
+    </resultMap>
+
+
+    <resultMap type="com.wms.oms.domain.ProductSku" id="ProductSkuResult">
+        <result property="id"    column="s_id"    />
+        <result property="barCode"    column="bar_code"    />
+        <result property="skuName"    column="sku_name"    />
+        <result property="specifications"    column="specifications"    />
+        <result property="productId"    column="product_id"    />
+        <result property="salePrice"    column="sale_price"    />
+        <result property="tradePrice"    column="trade_price"    />
+        <result property="vipPrice"    column="vip_price"    />
+        <result property="discount1"    column="discount1"    />
+        <result property="discount2"    column="discount2"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="images"    column="images"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectProductListVo">
+        SELECT
+            wp.id,
+            wp.sn,
+            wp.product_code,
+            wp.is_spec,
+            wp.spec_list,
+            wp.category_id,
+            wp.product_name,
+            wp.images,
+            wp.del_flag,
+            wp.tenant_id,
+            wp.create_by,
+            wp.create_time,
+            wp.update_by,
+            wp.update_time,
+            wp.remark,
+            wpc.`category_name`
+        FROM
+            wms_product wp LEFT JOIN wms_product_category wpc ON wpc.`id` = wp.`category_id`
+    </sql>
+
+    <sql id="selectProductVo">
+        SELECT
+            p.`id`,
+            p.`sn`,
+            p.`product_name`,
+            p.`product_code`,
+            p.`category_id`,
+            p.`spec_list`,
+            p.`del_flag`,
+            p.`is_spec`,
+            p.`remark`,
+            s.`id` as s_id,
+            s.`bar_code`,
+            s.`specifications`,
+            s.`sale_price`,
+            s.`trade_price`,
+            s.`vip_price`,
+            s.`discount1`,
+            s.`images`
+        FROM
+            wms_product p
+                LEFT JOIN wms_product_sku s
+                          ON p.`id` = s.`product_id`
+
+    </sql>
+
+    <select id="selectById" resultMap="ProductResult">
+        <include refid="selectProductVo"></include>
+     WHERE p.id = #{id} AND s.del_flag = 0
+    </select>
+
+
+    <select id="selectList" resultMap="ProductResult">
+        <include refid="selectProductListVo"></include>
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('订单辅助列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>产品id：</p>
+                                <input type="text" name="commodityId"/>
+                            </li>
+                            <li>
+                                <p>产品数量：</p>
+                                <input type="text" name="commodityCount"/>
+                            </li>
+                            <li>
+                                <p>产品信息：</p>
+                                <input type="text" name="commodityJson"/>
+                            </li>
+                            <li>
+                                <p>产品金额：</p>
+                                <input type="text" name="deputyMoney"/>
+                            </li>
+                            <li>
+                                <p>支付金额：</p>
+                                <input type="text" name="deputyMoenyPay"/>
+                            </li>
+                            <li>
+                                <p>优惠金额：</p>
+                                <input type="text" name="deputyMoenyDis"/>
+                            </li>
+                            <li>
+                                <p>订单编号：</p>
+                                <input type="text" name="orderId"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="bussiness:commodityorderdeputy:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="bussiness:commodityorderdeputy:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="bussiness:commodityorderdeputy:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="bussiness:commodityorderdeputy:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('bussiness:commodityorderdeputy:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('bussiness:commodityorderdeputy:remove')}]];
+        var deputyIdDatas = [[${@dict.getType('${column.dictType}')}]];
+        var commodityIdDatas = [[${@dict.getType('${column.dictType}')}]];
+        var commodityCountDatas = [[${@dict.getType('${column.dictType}')}]];
+        var commodityJsonDatas = [[${@dict.getType('${column.dictType}')}]];
+        var deputyMoneyDatas = [[${@dict.getType('${column.dictType}')}]];
+        var deputyMoenyPayDatas = [[${@dict.getType('${column.dictType}')}]];
+        var deputyMoenyDisDatas = [[${@dict.getType('${column.dictType}')}]];
+        var orderIdDatas = [[${@dict.getType('${column.dictType}')}]];
+        var createTimeDatas = [[${@dict.getType('${column.dictType}')}]];
+        var updateTimeDatas = [[${@dict.getType('${column.dictType}')}]];
+        var updateByDatas = [[${@dict.getType('${column.dictType}')}]];
+        var dataVerFlagDatas = [[${@dict.getType('${column.dictType}')}]];
+        var prefix = ctx + "bussiness/commodityorderdeputy";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "订单辅助",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'deputyId', 
+                    title : 'id',
+                    visible: false
+                },
+                {
+                    field : 'commodityId', 
+                    title : '产品id',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(commodityIdDatas, value);
+                    }
+                },
+                {
+                    field : 'commodityCount', 
+                    title : '产品数量',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(commodityCountDatas, value);
+                    }
+                },
+                {
+                    field : 'commodityJson', 
+                    title : '产品信息',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(commodityJsonDatas, value);
+                    }
+                },
+                {
+                    field : 'deputyMoney', 
+                    title : '产品金额',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(deputyMoneyDatas, value);
+                    }
+                },
+                {
+                    field : 'deputyMoenyPay', 
+                    title : '支付金额',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(deputyMoenyPayDatas, value);
+                    }
+                },
+                {
+                    field : 'deputyMoenyDis', 
+                    title : '优惠金额',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(deputyMoenyDisDatas, value);
+                    }
+                },
+                {
+                    field : 'orderId', 
+                    title : '订单编号',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(orderIdDatas, value);
+                    }
+                },
+                {
+                    field : 'createTime', 
+                    title : '创建时间',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(createTimeDatas, value);
+                    }
+                },
+                {
+                    field : 'updateTime', 
+                    title : '更新时间',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(updateTimeDatas, value);
+                    }
+                },
+                {
+                    field : 'updateBy', 
+                    title : '操作人',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(updateByDatas, value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.deputyId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.deputyId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+<th:block th:include="include :: header('订单信息列表')" />
+<th:block th:include="include :: select2-css" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li><p>所属商户：</p> <select id="mechantId" class="form-control"
+								name="mechantId">
+									<option value="">------全部------</option>
+									<option th:each="post:${acs}" th:value="${post.merchantId}"
+										th:text="${post.merchantName}"></option>
+							</select></li>
+							<li>
+								<p>支付渠道：</p> <select name="orderPayWay"
+								th:with="type=${@dict.getType('t_order_pay_way')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li>
+								<p>订单状态：</p> <select name="orderStatus"
+								th:with="type=${@dict.getType('t_order_status')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li>
+								<p>退款状态：</p> <select name="refundStatus"
+								th:with="type=${@dict.getType('t_refund_status')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li>
+								<p>用户名称：</p> <input type="text" name="userName" />
+							</li>
+
+							<li><a class="btn btn-primary btn-rounded btn-sm"
+								onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm"
+								onclick="resetPre();"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-warning" onclick="$.table.exportExcel()"
+					shiro:hasPermission="bussiness:orders:export"> <i
+					class="fa fa-download"></i> 导出
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: select2-js" />
+	<script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('bussiness:orders:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('bussiness:orders:remove')}]];
+        var orderPayWayDatas = [[${@dict.getType('t_order_pay_way')}]];
+        var orderStatusDatas = [[${@dict.getType('t_order_status')}]];
+        var refundStatusDatas = [[${@dict.getType('t_refund_status')}]];
+        var prefix = ctx + "bussiness/orders";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "订单信息",
+                sortName: "updateDatetime",
+		        sortOrder: "desc",      
+                 columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'orderId', 
+                    title : '订单编号',
+                },
+                {
+                    field : 'merchantName', 
+                    title : '所属商户'
+                },
+                {
+                    field : 'commodityName', 
+                    title : '产品名称'
+                },
+                {
+                    field : 'orderMoney', 
+                    title : '订单金额',
+                    formatter : function(value) {
+                    	return value.toFixed(2)+"元";
+                    }
+                },
+                {
+                    field : 'orderPayWay', 
+                    title : '支付渠道',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(orderPayWayDatas, value);
+                    }
+                },
+                {
+                    field : 'orderStatus', 
+                    title : '订单状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(orderStatusDatas, value);
+                    }
+                },
+                {
+                    field : 'refundStatus', 
+                    title : '退款状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(refundStatusDatas, value);
+                    }
+                },
+                {
+                    field : 'userName', 
+                    title : '用户名称'
+                },
+                {
+                    field : 'createDatetime', 
+                    title : '创建时间',
+					sortable: true
+                },
+                {
+                    field : 'updateDatetime', 
+                    title : '更新时间',
+					sortable: true
+                },
+                {
+                    field : 'payDatetime', 
+                    title : '支付时间',
+					sortable: true
+                }
+                 ]
+            };
+            $.table.init(options);
+        });
+        
+    	function resetPre() {
+    		$.form.reset();
+    		$("#mechantId").val($("#mechantId").val()).trigger("change");
+    	}
+    </script>
+</body>
+</html>

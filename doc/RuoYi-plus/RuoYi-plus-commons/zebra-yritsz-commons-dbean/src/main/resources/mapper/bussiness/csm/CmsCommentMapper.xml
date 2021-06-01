@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.cms.mapper.CmsCommentMapper">
+
+    <resultMap type="CmsComment" id="CmsCommentResult">
+        <result property="commentId" column="comment_id"/>
+        <result property="commentPid" column="comment_pid"/>
+        <result property="commentTid" column="comment_tid"/>
+        <result property="commentType" column="comment_type"/>
+        <result property="commentContent" column="comment_content"/>
+        <result property="commentReply" column="comment_reply"/>
+        <result property="numOpposition" column="num_opposition"/>
+        <result property="numLike" column="num_like"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userAvatar" column="user_avatar"/>
+        <result property="userContact" column="user_contact"/>
+        <result property="userIp" column="user_ip"/>
+        <result property="userStatus" column="user_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="merchantId" column="merchant_id"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="topFlag" column="top_flag"/>
+    </resultMap>
+
+    <sql id="selectCmsCommentVo">
+        select comment_id, comment_pid, comment_tid, comment_type, comment_content, comment_reply, num_opposition, num_like, user_id, user_name, user_avatar, user_contact, user_ip, user_status, create_time, update_time, merchant_id, update_by, del_flag, top_flag from cms_comment
+    </sql>
+
+    <select id="selectCmsCommentList" parameterType="CmsComment" resultMap="CmsCommentResult">
+        <include refid="selectCmsCommentVo"/>
+        <where>
+            <if test="commentType != null ">and comment_type = #{commentType}</if>
+            <if test="commentContent != null  and commentContent != ''">and comment_content like concat('%',
+                #{commentContent}, '%')
+            </if>
+            <if test="commentReply != null  and commentReply != ''">and comment_reply like concat('%', #{commentReply},
+                '%')
+            </if>
+            <if test="userId != null  and userId != ''">and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''">and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userContact != null  and userContact != ''">and user_contact = #{userContact}</if>
+            <if test="userIp != null  and userIp != ''">and user_ip = #{userIp}</if>
+            <if test="userStatus != null ">and user_status = #{userStatus}</if>
+            <if test="merchantId != null  and merchantId != ''">and merchant_id = #{merchantId}</if>
+            <if test="commentTid != null  and commentTid != ''">and comment_tid = #{commentTid}</if>
+            and del_flag=0
+        </where>
+    </select>
+
+    <select id="selectCmsCommentById" parameterType="Long" resultMap="CmsCommentResult">
+        <include refid="selectCmsCommentVo"/>
+        where comment_id = #{commentId}
+    </select>
+
+    <insert id="insertCmsComment" parameterType="CmsComment" useGeneratedKeys="true" keyProperty="commentId">
+        insert into cms_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="commentPid != null ">comment_pid,</if>
+            <if test="commentTid != null  and commentTid != ''">comment_tid,</if>
+            <if test="commentType != null ">comment_type,</if>
+            <if test="commentContent != null  and commentContent != ''">comment_content,</if>
+            <if test="commentReply != null  and commentReply != ''">comment_reply,</if>
+            <if test="numOpposition != null ">num_opposition,</if>
+            <if test="numLike != null ">num_like,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="userName != null  and userName != ''">user_name,</if>
+            <if test="userAvatar != null  and userAvatar != ''">user_avatar,</if>
+            <if test="userContact != null  and userContact != ''">user_contact,</if>
+            <if test="userIp != null  and userIp != ''">user_ip,</if>
+            <if test="userStatus != null ">user_status,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="delFlag != null ">del_flag,</if>
+            <if test="topFlag != null ">top_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="commentPid != null ">#{commentPid},</if>
+            <if test="commentTid != null  and commentTid != ''">#{commentTid},</if>
+            <if test="commentType != null ">#{commentType},</if>
+            <if test="commentContent != null  and commentContent != ''">#{commentContent},</if>
+            <if test="commentReply != null  and commentReply != ''">#{commentReply},</if>
+            <if test="numOpposition != null ">#{numOpposition},</if>
+            <if test="numLike != null ">#{numLike},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="userName != null  and userName != ''">#{userName},</if>
+            <if test="userAvatar != null  and userAvatar != ''">#{userAvatar},</if>
+            <if test="userContact != null  and userContact != ''">#{userContact},</if>
+            <if test="userIp != null  and userIp != ''">#{userIp},</if>
+            <if test="userStatus != null ">#{userStatus},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="merchantId != null  and merchantId != ''">#{merchantId},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="delFlag != null ">#{delFlag},</if>
+            <if test="topFlag != null ">#{topFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCmsComment" parameterType="CmsComment">
+        update cms_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="commentPid != null ">comment_pid = #{commentPid},</if>
+            <if test="commentTid != null  and commentTid != ''">comment_tid = #{commentTid},</if>
+            <if test="commentType != null ">comment_type = #{commentType},</if>
+            <if test="commentContent != null  and commentContent != ''">comment_content = #{commentContent},</if>
+            <if test="commentReply != null  and commentReply != ''">comment_reply = #{commentReply},</if>
+            <if test="numOpposition != null ">num_opposition = #{numOpposition},</if>
+            <if test="numLike != null ">num_like = #{numLike},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="userName != null  and userName != ''">user_name = #{userName},</if>
+            <if test="userAvatar != null  and userAvatar != ''">user_avatar = #{userAvatar},</if>
+            <if test="userContact != null  and userContact != ''">user_contact = #{userContact},</if>
+            <if test="userIp != null  and userIp != ''">user_ip = #{userIp},</if>
+            <if test="userStatus != null ">user_status = #{userStatus},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id = #{merchantId},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="delFlag != null ">del_flag = #{delFlag},</if>
+            <if test="topFlag != null ">top_flag = #{topFlag},</if>
+        </trim>
+        where comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteCmsCommentById" parameterType="Long">
+        delete from cms_comment where comment_id = #{commentId}
+    </delete>
+
+    <delete id="deleteCmsCommentByIds" parameterType="String">
+        UPDATE cms_comment SET del_flag =1 where comment_id in
+        <foreach item="commentId" collection="array" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>
+    </delete>
+
+</mapper>

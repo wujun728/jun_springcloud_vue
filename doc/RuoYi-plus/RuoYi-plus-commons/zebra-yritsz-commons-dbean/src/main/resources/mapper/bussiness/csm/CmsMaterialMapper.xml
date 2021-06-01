@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.cms.mapper.CmsMaterialMapper">
+
+    <resultMap type="CmsMaterial" id="CmsMaterialResult">
+        <result property="materialId" column="material_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="materialName" column="material_name"/>
+        <result property="materialType" column="material_type"/>
+        <result property="materialDescription" column="material_description"/>
+        <result property="savePath" column="save_path"/>
+        <result property="materialThumbnail" column="material_thumbnail"/>
+        <result property="auditState" column="audit_state"/>
+        <result property="auditReason" column="audit_reason"/>
+        <result property="useState" column="use_state"/>
+        <result property="merchantId" column="merchant_id"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectCmsMaterialVo">
+        select material_id, group_id, material_name, material_type, material_description, save_path, material_thumbnail, audit_state, audit_reason, use_state, merchant_id, update_by, create_time, update_time from cms_material
+    </sql>
+
+    <select id="selectCmsMaterialList" parameterType="CmsMaterial" resultMap="CmsMaterialResult">
+        <include refid="selectCmsMaterialVo"/>
+        <where>
+            <if test="groupId != null  and groupId != ''"> and group_id=#{groupId} </if>
+            <if test="materialName != null  and materialName != ''">and material_name like concat('%', #{materialName},
+                '%')
+            </if>
+            <if test="materialType != null ">and material_type like concat('%', #{materialType}, '%')</if>
+            <if test="materialDescription != null  and materialDescription != ''">and material_description like
+                concat('%', #{materialDescription}, '%')
+            </if>
+            <if test="savePath != null  and savePath != ''">and save_path like concat('%', #{savePath}, '%')</if>
+            <if test="materialThumbnail != null  and materialThumbnail != ''">and material_thumbnail like concat('%',
+                #{materialThumbnail}, '%')
+            </if>
+            <if test="auditState != null ">and audit_state like concat('%', #{auditState}, '%')</if>
+            <if test="auditReason != null  and auditReason != ''">and audit_reason like concat('%', #{auditReason},
+                '%')
+            </if>
+            <if test="useState != null  and useState != ''">and use_state like concat('%', #{useState}, '%')</if>
+            <if test="merchantId != null  and merchantId != ''">and merchant_id like concat('%', #{merchantId}, '%')
+            </if>
+            <if test="updateBy != null  and updateBy != ''">and update_by like concat('%', #{updateBy}, '%')</if>
+            <if test="createTime != null ">and create_time like concat('%', #{createTime}, '%')</if>
+            <if test="updateTime != null ">and update_time like concat('%', #{updateTime}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectCmsMaterialById" parameterType="String" resultMap="CmsMaterialResult">
+        <include refid="selectCmsMaterialVo"/>
+        where material_id = #{materialId}
+    </select>
+
+    <insert id="insertCmsMaterial" parameterType="CmsMaterial">
+        insert into cms_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialId != null  and materialId != ''">material_id,</if>
+            <if test="groupId != null  and groupId != ''">group_id,</if>
+            <if test="materialName != null  and materialName != ''">material_name,</if>
+            <if test="materialType != null ">material_type,</if>
+            <if test="materialDescription != null  and materialDescription != ''">material_description,</if>
+            <if test="savePath != null  and savePath != ''">save_path,</if>
+            <if test="materialThumbnail != null  and materialThumbnail != ''">material_thumbnail,</if>
+            <if test="auditState != null ">audit_state,</if>
+            <if test="auditReason != null  and auditReason != ''">audit_reason,</if>
+            <if test="useState != null  and useState != ''">use_state,</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialId != null  and materialId != ''">#{materialId},</if>
+            <if test="groupId != null  and groupId != ''">#{groupId},</if>
+            <if test="materialName != null  and materialName != ''">#{materialName},</if>
+            <if test="materialType != null ">#{materialType},</if>
+            <if test="materialDescription != null  and materialDescription != ''">#{materialDescription},</if>
+            <if test="savePath != null  and savePath != ''">#{savePath},</if>
+            <if test="materialThumbnail != null  and materialThumbnail != ''">#{materialThumbnail},</if>
+            <if test="auditState != null ">#{auditState},</if>
+            <if test="auditReason != null  and auditReason != ''">#{auditReason},</if>
+            <if test="useState != null  and useState != ''">#{useState},</if>
+            <if test="merchantId != null  and merchantId != ''">#{merchantId},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCmsMaterial" parameterType="CmsMaterial">
+        update cms_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null  and groupId != ''">group_id = #{groupId},</if>
+            <if test="materialName != null  and materialName != ''">material_name = #{materialName},</if>
+            <if test="materialType != null ">material_type = #{materialType},</if>
+            material_description = #{materialDescription},
+            <if test="savePath != null  and savePath != ''">save_path = #{savePath},</if>
+            <if test="materialThumbnail != null  and materialThumbnail != ''">material_thumbnail =
+                #{materialThumbnail},
+            </if>
+            <if test="auditState != null ">audit_state = #{auditState},</if>
+            <if test="auditReason != null  and auditReason != ''">audit_reason = #{auditReason},</if>
+            <if test="useState != null  and useState != ''">use_state = #{useState},</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id = #{merchantId},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where material_id = #{materialId}
+    </update>
+
+    <delete id="deleteCmsMaterialById" parameterType="String">
+        delete from cms_material where material_id = #{materialId}
+    </delete>
+
+    <delete id="deleteCmsMaterialByIds" parameterType="String">
+        delete from cms_material where material_id in
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </delete>
+
+</mapper>

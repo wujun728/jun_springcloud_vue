@@ -1,0 +1,7 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.ruoyi.common.redis.configure.RedisConfig,\
+  com.ruoyi.common.redis.service.RedisService,\
+  com.ruoyi.common.redis.configure.RedissonConfig,\
+  com.ruoyi.common.redis.lock.RedisDistributedLocker
+
+

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.mapper.OrdersMapper">
+
+	<resultMap type="Orders" id="OrdersResult">
+		<result property="orderId" column="order_id" />
+		<result property="commodityId" column="commodity_id" />
+		<result property="orderMoney" column="order_money" />
+		<result property="orderPayWay" column="order_pay_way" />
+		<result property="orderStatus" column="order_status" />
+		<result property="refundStatus" column="refund_status" />
+		<result property="userName" column="user_name" />
+		<result property="createDatetime" column="create_datetime" />
+		<result property="updateDatetime" column="update_datetime" />
+		<result property="payDatetime" column="pay_datetime" />
+		<result property="mechantId" column="mechant_id" />
+		<result property="dataVerFlag" column="data_ver_flag" />
+	</resultMap>
+
+	<sql id="selectOrdersVo">
+		select order_id, commodity_id, order_money, order_pay_way, order_status,
+		refund_status, user_name, create_datetime, update_datetime,
+		pay_datetime, mechant_id, data_ver_flag from t_orders
+	</sql>
+
+	<select id="selectOrdersList" parameterType="Orders" resultMap="OrdersResult">
+		<include refid="selectOrdersVo" />
+		<where>
+			<if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+			<if test="createDatetime != null "> and create_datetime like concat('%', #{createDatetime},
+				'%')</if>
+			<if test="updateDatetime != null "> and update_datetime like concat('%', #{updateDatetime},
+				'%')</if>
+			<if test="payDatetime != null "> and pay_datetime like concat('%', #{payDatetime}, '%')
+			</if>
+			<if test="mechantId != null "> and mechant_id like concat('%', #{mechantId}, '%')</if>
+			<if test="dataVerFlag != null "> and data_ver_flag like concat('%', #{dataVerFlag}, '%')
+			</if>
+			<if test="params.dataMerchantAuth!=null and params.dataMerchantAuth!=''">${params.dataMerchantAuth}</if>
+		</where>
+	</select>
+
+	<select id="selectOrdersById" parameterType="String" resultMap="OrdersResult">
+	</select>
+
+	<insert id="insertOrders" parameterType="Orders">
+		insert into t_orders
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="orderId != null  and orderId != ''">order_id,</if>
+			<if test="commodityId != null  and commodityId != ''">commodity_id,</if>
+			<if test="orderMoney != null ">order_money,</if>
+			<if test="orderPayWay != null ">order_pay_way,</if>
+			<if test="orderStatus != null ">order_status,</if>
+			<if test="refundStatus != null ">refund_status,</if>
+			<if test="userName != null  and userName != ''">user_name,</if>
+			<if test="createDatetime != null ">create_datetime,</if>
+			<if test="updateDatetime != null ">update_datetime,</if>
+			<if test="payDatetime != null ">pay_datetime,</if>
+			<if test="mechantId != null ">mechant_id,</if>
+			<if test="dataVerFlag != null ">data_ver_flag,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="orderId != null  and orderId != ''">#{orderId},</if>
+			<if test="commodityId != null  and commodityId != ''">#{commodityId},</if>
+			<if test="orderMoney != null ">#{orderMoney},</if>
+			<if test="orderPayWay != null ">#{orderPayWay},</if>
+			<if test="orderStatus != null ">#{orderStatus},</if>
+			<if test="refundStatus != null ">#{refundStatus},</if>
+			<if test="userName != null  and userName != ''">#{userName},</if>
+			<if test="createDatetime != null ">#{createDatetime},</if>
+			<if test="updateDatetime != null ">#{updateDatetime},</if>
+			<if test="payDatetime != null ">#{payDatetime},</if>
+			<if test="mechantId != null ">#{mechantId},</if>
+			<if test="dataVerFlag != null ">#{dataVerFlag},</if>
+		</trim>
+	</insert>
+
+	<update id="updateOrders" parameterType="Orders">
+		update t_orders
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="commodityId != null  and commodityId != ''">commodity_id = #{commodityId},</if>
+			<if test="orderMoney != null ">order_money = #{orderMoney},</if>
+			<if test="orderPayWay != null ">order_pay_way = #{orderPayWay},</if>
+			<if test="orderStatus != null ">order_status = #{orderStatus},</if>
+			<if test="refundStatus != null ">refund_status = #{refundStatus},</if>
+			<if test="userName != null  and userName != ''">user_name = #{userName},</if>
+			<if test="createDatetime != null ">create_datetime = #{createDatetime},</if>
+			<if test="updateDatetime != null ">update_datetime = #{updateDatetime},</if>
+			<if test="payDatetime != null ">pay_datetime = #{payDatetime},</if>
+			<if test="mechantId != null ">mechant_id = #{mechantId},</if>
+			<if test="dataVerFlag != null ">data_ver_flag = #{dataVerFlag},</if>
+		</trim>
+		where order_id = #{orderId}
+	</update>
+
+	<delete id="deleteOrdersById" parameterType="String">
+		delete from t_orders where order_id = #{orderId}
+	</delete>
+
+	<delete id="deleteOrdersByIds" parameterType="String">
+		delete from t_orders where order_id in
+		<foreach item="orderId" collection="array" open="(" separator=","
+			close=")">
+			#{orderId}
+		</foreach>
+	</delete>
+
+</mapper>

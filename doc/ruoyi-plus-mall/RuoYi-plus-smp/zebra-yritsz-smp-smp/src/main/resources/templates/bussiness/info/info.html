@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+<th:block th:include="include :: header('产品信息列表')" />
+<th:block th:include="include :: select2-css" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li><p>所属商户：</p> <select id="mechantId" class="form-control"
+								name="mechantId">
+									<option value="">------全部------</option>
+									<option th:each="post:${acs}" th:value="${post.merchantId}"
+										th:text="${post.merchantName}"></option>
+							</select></li>
+							<li>
+								<p>产品名称：</p> <input type="text" name="commodityName" />
+							</li>
+							<li>
+								<p>产品状态：</p> <select name="commodityStatus"
+								th:with="type=${@dict.getType('t_merchant_status')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+										th:value="${dict.dictValue}"></option>
+							</select>
+							</li>
+							<li><a class="btn btn-primary btn-rounded btn-sm"
+								onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm"
+								onclick="resetPre();"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<!-- 		<div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()"
+					shiro:hasPermission="bussiness:info:add"> <i class="fa fa-plus"></i>
+					添加
+				</a> <a class="btn btn-primary btn-edit disabled"
+					onclick="$.operate.edit()"
+					shiro:hasPermission="bussiness:info:edit"> <i
+					class="fa fa-edit"></i> 修改
+				</a> <a class="btn btn-danger btn-del btn-del disabled"
+					onclick="$.operate.removeAll()"
+					shiro:hasPermission="bussiness:info:remove"> <i
+					class="fa fa-remove"></i> 删除
+				</a> <a class="btn btn-warning" onclick="$.table.exportExcel()"
+					shiro:hasPermission="bussiness:info:export"> <i
+					class="fa fa-download"></i> 导出
+				</a>
+			</div> -->
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: select2-js" />
+	<script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('bussiness:info:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('bussiness:info:remove')}]];
+        var commodityStatusDatas = [[${@dict.getType('t_merchant_status')}]];
+        var prefix = ctx + "bussiness/info";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "产品信息",
+                sortName: "updateDatetime",
+		        sortOrder: "desc",      
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'commodityId', 
+                    title : '产品编号',
+                },
+                {
+                    field : 'merchantName', 
+                    title : '所属商户'
+                },
+                {
+                    field : 'commodityName', 
+                    title : '产品名称'
+                },
+                {
+                    field : 'commodityStatus', 
+                    title : '产品状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(commodityStatusDatas, value);
+                    }
+                },
+                {
+                    field : 'commodityMoeny', 
+                    title : '产品价格',
+                    formatter : function(value) {
+                    	return value.toFixed(2)+"元";
+                    }
+                },
+                {
+                    field : 'commodityCount', 
+                    title : '产品库存'
+                },
+                {
+                    field : 'commodityImg', 
+                    title : '产品图片',
+                    formatter : function(value) {
+                    	if(value){
+    					return "<img src='"
+    					+ value
+    					+ "' style='height: 36px;' target='_blank' tile='点击查看' onclick='$.operate.alertPic(\""
+    					+ value
+    					+ "\")'></img>";
+     					}
+                    }
+                },
+                {
+                    field : 'createDatetime', 
+                    title : '创建时间',
+					sortable: true
+                },
+                {
+                    field : 'updateDatetime', 
+                    title : '更新时间',
+					sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                       /*  actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.commodityId + '\')"><i class="fa fa-edit"></i>编辑</a> '); */
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.commodityId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        function resetPre() {
+    		$.form.reset();
+    		$("#mechantId").val($("#mechantId").val()).trigger("change");
+    	}
+    </script>
+</body>
+</html>

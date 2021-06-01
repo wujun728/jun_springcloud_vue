@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.mapper.CommodityCartMapper">
+    
+    <resultMap type="CommodityCart" id="CommodityCartResult">
+        <result property="cartId"    column="cart_id"    />
+        <result property="commodityId"    column="commodity_id"    />
+        <result property="commodityCount"    column="commodity_count"    />
+        <result property="commodityMoney"    column="commodity_money"    />
+        <result property="commodityJson"    column="commodity_json"    />
+        <result property="userId"    column="user_id"    />
+        <result property="merchantId"    column="merchant_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="dataVerFlag"    column="data_ver_flag"    />
+    </resultMap>
+
+    <sql id="selectCommodityCartVo">
+        select cart_id, commodity_id, commodity_count, commodity_money, commodity_json, user_id, merchant_id, create_time, update_time, update_by, data_ver_flag from t_commodity_cart
+    </sql>
+
+    <select id="selectCommodityCartList" parameterType="CommodityCart" resultMap="CommodityCartResult">
+        <include refid="selectCommodityCartVo"/>
+        <where>  
+            <if test="commodityId != null  and commodityId != ''"> and commodity_id = #{commodityId}</if>
+            <if test="commodityCount != null "> and commodity_count = #{commodityCount}</if>
+            <if test="commodityMoney != null "> and commodity_money = #{commodityMoney}</if>
+            <if test="commodityJson != null  and commodityJson != ''"> and commodity_json = #{commodityJson}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="merchantId != null  and merchantId != ''"> and merchant_id = #{merchantId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommodityCartById" parameterType="String" resultMap="CommodityCartResult">
+        <include refid="selectCommodityCartVo"/>
+        where cart_id = #{cartId}
+    </select>
+        
+    <insert id="insertCommodityCart" parameterType="CommodityCart">
+        insert into t_commodity_cart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cartId != null  and cartId != ''">cart_id,</if>
+            <if test="commodityId != null  and commodityId != ''">commodity_id,</if>
+            <if test="commodityCount != null ">commodity_count,</if>
+            <if test="commodityMoney != null ">commodity_money,</if>
+            <if test="commodityJson != null  and commodityJson != ''">commodity_json,</if>
+            <if test="userId != null  and userId != ''">user_id,</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="dataVerFlag != null ">data_ver_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cartId != null  and cartId != ''">#{cartId},</if>
+            <if test="commodityId != null  and commodityId != ''">#{commodityId},</if>
+            <if test="commodityCount != null ">#{commodityCount},</if>
+            <if test="commodityMoney != null ">#{commodityMoney},</if>
+            <if test="commodityJson != null  and commodityJson != ''">#{commodityJson},</if>
+            <if test="userId != null  and userId != ''">#{userId},</if>
+            <if test="merchantId != null  and merchantId != ''">#{merchantId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="dataVerFlag != null ">#{dataVerFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommodityCart" parameterType="CommodityCart">
+        update t_commodity_cart
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="commodityId != null  and commodityId != ''">commodity_id = #{commodityId},</if>
+            <if test="commodityCount != null ">commodity_count = #{commodityCount},</if>
+            <if test="commodityMoney != null ">commodity_money = #{commodityMoney},</if>
+            <if test="commodityJson != null  and commodityJson != ''">commodity_json = #{commodityJson},</if>
+            <if test="userId != null  and userId != ''">user_id = #{userId},</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id = #{merchantId},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="dataVerFlag != null ">data_ver_flag = #{dataVerFlag},</if>
+        </trim>
+        where cart_id = #{cartId}
+    </update>
+
+    <delete id="deleteCommodityCartById" parameterType="String">
+        delete from t_commodity_cart where cart_id = #{cartId}
+    </delete>
+
+    <delete id="deleteCommodityCartByIds" parameterType="String">
+        delete from t_commodity_cart where cart_id in 
+        <foreach item="cartId" collection="array" open="(" separator="," close=")">
+            #{cartId}
+        </foreach>
+    </delete>
+    
+</mapper>

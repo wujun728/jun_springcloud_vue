@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.mapper.CommodityInfoMapper">
+
+	<resultMap type="CommodityInfo" id="CommodityInfoResult">
+		<result property="commodityId" column="commodity_id" />
+		<result property="commodityName" column="commodity_name" />
+		<result property="commodityStatus" column="commodity_status" />
+		<result property="commodityMoeny" column="commodity_moeny" />
+		<result property="commodityCount" column="commodity_count" />
+		<result property="commodityImg" column="commodity_img" />
+		<result property="createDatetime" column="create_datetime" />
+		<result property="updateDatetime" column="update_datetime" />
+		<result property="mechantId" column="mechant_id" />
+		<result property="dataVerFlag" column="data_ver_flag" />
+	</resultMap>
+
+	<sql id="selectCommodityInfoVo">
+		select commodity_id, commodity_name, commodity_status, commodity_moeny,
+		commodity_count, commodity_img, create_datetime, update_datetime,
+		mechant_id, data_ver_flag from t_commodity_info
+	</sql>
+
+	<select id="selectCommodityInfoList" parameterType="CommodityInfo"
+		resultMap="CommodityInfoResult">
+		<include refid="selectCommodityInfoVo" />
+		<where>
+			<if test="commodityName != null  and commodityName != ''"> and commodity_name like concat('%', #{commodityName},
+				'%')</if>
+			<if test="commodityStatus != null  and commodityStatus != ''"> and commodity_status like concat('%',
+				#{commodityStatus}, '%')</if>
+			<if test="commodityMoeny != null "> and commodity_moeny like concat('%', #{commodityMoeny},
+				'%')</if>
+			<if test="commodityCount != null "> and commodity_count like concat('%', #{commodityCount},
+				'%')</if>
+			<if test="commodityImg != null  and commodityImg != ''"> and commodity_img like concat('%', #{commodityImg}, '%')
+			</if>
+			<if test="createDatetime != null "> and create_datetime like concat('%', #{createDatetime},
+				'%')</if>
+			<if test="updateDatetime != null "> and update_datetime like concat('%', #{updateDatetime},
+				'%')</if>
+			<if test="mechantId != null "> and mechant_id like concat('%', #{mechantId}, '%')</if>
+			<if test="dataVerFlag != null "> and data_ver_flag like concat('%', #{dataVerFlag}, '%')
+			</if>
+		</where>
+	</select>
+
+	<select id="selectCommodityInfoById" parameterType="String"
+		resultMap="CommodityInfoResult">
+	</select>
+
+	<insert id="insertCommodityInfo" parameterType="CommodityInfo">
+		insert into t_commodity_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="commodityId != null  and commodityId != ''">commodity_id,</if>
+			<if test="commodityName != null  and commodityName != ''">commodity_name,</if>
+			<if test="commodityStatus != null  and commodityStatus != ''">commodity_status,</if>
+			<if test="commodityMoeny != null ">commodity_moeny,</if>
+			<if test="commodityCount != null ">commodity_count,</if>
+			<if test="commodityImg != null  and commodityImg != ''">commodity_img,</if>
+			<if test="createDatetime != null ">create_datetime,</if>
+			<if test="updateDatetime != null ">update_datetime,</if>
+			<if test="mechantId != null ">mechant_id,</if>
+			<if test="dataVerFlag != null ">data_ver_flag,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="commodityId != null  and commodityId != ''">#{commodityId},</if>
+			<if test="commodityName != null  and commodityName != ''">#{commodityName},</if>
+			<if test="commodityStatus != null  and commodityStatus != ''">#{commodityStatus},</if>
+			<if test="commodityMoeny != null ">#{commodityMoeny},</if>
+			<if test="commodityCount != null ">#{commodityCount},</if>
+			<if test="commodityImg != null  and commodityImg != ''">#{commodityImg},</if>
+			<if test="createDatetime != null ">#{createDatetime},</if>
+			<if test="updateDatetime != null ">#{updateDatetime},</if>
+			<if test="mechantId != null ">#{mechantId},</if>
+			<if test="dataVerFlag != null ">#{dataVerFlag},</if>
+		</trim>
+	</insert>
+
+	<update id="updateCommodityInfo" parameterType="CommodityInfo">
+		update t_commodity_info
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="commodityName != null  and commodityName != ''">commodity_name = #{commodityName},</if>
+			<if test="commodityStatus != null  and commodityStatus != ''">commodity_status = #{commodityStatus},</if>
+			<if test="commodityMoeny != null ">commodity_moeny = #{commodityMoeny},</if>
+			<if test="commodityCount != null ">commodity_count = #{commodityCount},</if>
+			<if test="commodityImg != null  and commodityImg != ''">commodity_img = #{commodityImg},</if>
+			<if test="createDatetime != null ">create_datetime = #{createDatetime},</if>
+			<if test="updateDatetime != null ">update_datetime = #{updateDatetime},</if>
+			<if test="mechantId != null ">mechant_id = #{mechantId},</if>
+			<if test="dataVerFlag != null ">data_ver_flag = #{dataVerFlag},</if>
+			<if test="params.dataMerchantAuth!=null and params.dataMerchantAuth!=''">${params.dataMerchantAuth}</if>
+		</trim>
+		where commodity_id = #{commodityId}
+	</update>
+
+	<delete id="deleteCommodityInfoById" parameterType="String">
+		delete from t_commodity_info where commodity_id = #{commodityId}
+	</delete>
+
+	<delete id="deleteCommodityInfoByIds" parameterType="String">
+		delete from t_commodity_info where commodity_id in
+		<foreach item="commodityId" collection="array" open="("
+			separator="," close=")">
+			#{commodityId}
+		</foreach>
+	</delete>
+
+</mapper>

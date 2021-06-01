@@ -1,0 +1,102 @@
+server: 
+  port: 9527
+
+logging:
+  level:
+    com.alibaba.nacos.client.naming: error
+#    org.springframework.cloud.gateway: debug
+ 
+spring: 
+  application:
+    name: ruoyi-gateway
+  devtools:
+    restart:
+      enabled: true
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yml
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      discovery:
+        locator:
+          lowerCaseServiceId: true
+          enabled: true
+      routes:
+        # 认证中心
+        - id: ruoyi-auth
+          uri: lb://ruoyi-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            # 验证码处理
+            - CacheRequest
+            - ImgCodeFilter
+            - StripPrefix=1
+            # 限流配置
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@remoteAddrKeyResolver}'
+                #允许用户每秒处理多少个请求
+                redis-rate-limiter.replenishRate: 2
+                #令牌桶的容量,允许在一秒钟内完成的最大请求
+                redis-rate-limiter.burstCapacity: 20
+              # 降级配置
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: 'forward:/fallback'
+        # 代码生成
+        - id: ruoyi-gen
+          uri: lb://ruoyi-gen
+          predicates:
+            - Path=/gen/**
+          filters:
+            - StripPrefix=1
+        # dfs
+        - id: ruoyi-dfs
+          uri: lb://ruoyi-dfs
+          predicates:
+            - Path=/dfs/**
+          filters:
+            - StripPrefix=1
+        # act
+        - id: ruoyi-activiti
+          uri: lb://ruoyi-activiti
+          predicates:
+            - Path=/act/**
+          filters:
+            - StripPrefix=1
+        #system 模块
+        - id: ruoyi-system
+          uri: lb://ruoyi-system
+          predicates:
+            - Path=/system/**
+          filters:
+            - StripPrefix=1
+            # 限流配置
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@remoteAddrKeyResolver}'
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+              # 降级配置
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: 'forward:/fallback'
+
+hystrix:
+  command:
+    default:  #default全局有效，service id指定应用有效
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000 #断路器超时时间，默认1000ms
+

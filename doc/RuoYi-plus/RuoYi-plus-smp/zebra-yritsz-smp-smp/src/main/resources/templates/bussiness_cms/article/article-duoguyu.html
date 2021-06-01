@@ -1,0 +1,305 @@
+<html>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>[[${title}]]</title>
+    <link th:href="@{/ruoyi/css/ry-ui.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/ruoyi/js/fast.js}"></script>
+    <style th:inline="css">
+        body{font:14px/1.5 "PingFang SC","Lantinghei SC","Microsoft YaHei","HanHei SC","Helvetica Neue","Open Sans",Arial,"Hiragino Sans GB","å¾®è½¯é›…é»‘",STHeiti,"WenQuanYi Micro Hei",SimSun,sans-serif;-webkit-font-smoothing:antialiased;}@media screen and (max-width:768px){.page{width:100%;margin:0 auto;padding:0px;background-color:#fff;box-shadow:#5079d9 2px 1px 5px 3px;}}@media screen and (min-width:768px){.page{width:70%;margin:0 auto;padding:10px 18px;background-color:#fff;}}.articleImg{height:360px;overflow:hidden;position:relative;}.articleImg .textBox{position:absolute;left:0;bottom:40px;z-index:10;padding:0 40px;width:100%;font-size:14px;color:#fff;line-height:28px;vertical-align:bottom;overflow:hidden;}.articleImg .textBox h1{font-size:28px;color:#fff;line-height:32px;vertical-align:bottom;}.articleImg .moreInfo{font-size:14px;color:#fff;line-height:28px;}.overlay{position:absolute;top:0;bottom:0;width:100%;-webkit-transition:all 0.2s ease;-moz-transition:all 0.2s ease;transition:all 0.2s ease;background-image:-webkit-linear-gradient(180deg,rgba(0,0,0,0.05) 5%,rgba(0,0,0,0.85) 100%);background-image:-moz-linear-gradient(180deg,rgba(0,0,0,0.05) 5%,rgba(0,0,0,0.85) 100%);background-image:linear-gradient(180deg,rgba(0,0,0,0.05) 5%,rgba(0,0,0,0.85) 100%);background-size:100%;}.articleImg .img{width:100%;height:360px;overflow:hidden;}.articleDetail{margin-top:20px;padding:20px;border-top:1px dotted #ddd;text-align:justify;}.articleDetail p{color:#4a4a4a;line-height:26px;font-size:15px !important;margin-bottom:15px;text-align:justify;}.articleDetail img{margin:0 0 8px 0;max-width:100%;vertical-align:middle;}.channelSiteInfo{margin:30px 0;text-align:right;}.iconChannelSite{display:inline-block;width:50px;height:50px;background:url(/images/logo/logo_water.png) no-repeat center;background-size:50px;-moz-border-radius:50%;border-radius:50%;overflow:hidden;}.footerInfo.top{text-align:right;border-top:0;margin-top:0;}.footerInfo{margin-top:20px;padding-top:20px;border-top:1px dotted #ddd;}.footerInfo .iconSpan{cursor:pointer;font-size:12px;padding:4px 10px;line-height:12px;border-radius:4px;background:#f4f4f4;color:#999;margin-left:5px;text-decoration:none;}.footerInfo .iconSpan:hover{background:#51e0c1;color:#fff;}
+        .iconChannelSite{ display:inline-block; width:50px; height:50px; background:url('[[@{/}]]images/logo/logo_water.png') no-repeat center; background-size:50px; -moz-border-radius:50%; border-radius:50%; overflow:hidden;}
+        .iconChannelSite.one{ background:url('[[@{/}]]images/logo/logo_one.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.dxgh{ background:url('[[@{/}]]images/logo/logo_dxgh.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.zhihu{ background:url('[[@{/}]]images/logo/logo_zhihu.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.guoke{ background:url('[[@{/}]]images/logo/logo_guoke.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.kr36{ background:url('[[@{/}]]images/logo/logo_36k.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.xinshixiang{ background:url('[[@{/}]]images/logo/logo_xinshixiang.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.pinwan{ background:url('[[@{/}]]images/logo/logo_pinwan.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.haoqixin{ background:url('[[@{/}]]images/logo/logo_haoqixin.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.chaping{ background:url('[[@{/}]]images/logo/logo_chaping.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.huxiu{ background:url('[[@{/}]]images/logo/logo_hx.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.renjian{ background:url('[[@{/}]]images/logo/logo_renjian.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.zhenshigushi{ background:url('[[@{/}]]images/logo/logo_zhenshigushi.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.douban{ background:url('[[@{/}]]images/logo/logo_db.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.jiemian{ background:url('[[@{/}]]images/logo/logo_jiemian.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.NGA{ background:url('[[@{/}]]images/logo/logo_nga.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.wangyi{ background:url('[[@{/}]]images/logo/logo_163.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.dgtle{ background:url('[[@{/}]]images/logo/logo_dgtle.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.toutiao{ background:url('[[@{/}]]images/logo/logo_toutiao.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.sina{ background:url('[[@{/}]]images/logo/logo_sina.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.geekpark{ background:url('[[@{/}]]images/logo/geekpark.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.jianshu{ background:url('[[@{/}]]images/logo/logo_js.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.sspai{ background:url('[[@{/}]]images/logo/icon_sspai.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.zcool{ background:url('[[@{/}]]images/logo/icon_zcool.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.yan15{ background:url('[[@{/}]]images/logo/icon_15yan.png') no-repeat center; background-size:50px;}
+        .iconChannelSite.yuecms{ background:url('[[@{/}]]images/logo/logo_yuecms.png') no-repeat center; background-size:50px;}
+
+        /*jumptHref*/
+        .jumpHrefGrid{
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 1200;
+            overflow: hidden;
+            text-align: center;
+            background: url("[[@{/}]]images/bgTree.png") left bottom repeat-x rgb(246, 246, 246);
+        }
+        .jumpHrefGrid .hrefGroup {
+            width: 360px;
+            height: 360px;
+            padding-top: 120px;
+            background: url('[[@{/}]]images/logo_filem.png') center top no-repeat;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -180px;
+            margin-left: -180px;
+            text-align: center;
+            color: rgb(51, 51, 51);
+            overflow: hidden;
+        }
+        .jumpHrefGrid .hrefGroup h4 {
+            font-size: 18px;
+            line-height: 30px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .jumpHrefGrid .hrefGroup p {
+            font-size: 14px;
+            line-height: 20px;
+            margin-bottom: 10px;
+        }
+        .jumpHrefGrid .hrefGroup p span {
+            color: rgb(4, 172, 113);
+            margin: 0px 5px;
+        }
+        .jumpHrefGrid .hrefGroup .btn {
+            display: inline-block;
+            padding: 0px 20px;
+            color: rgb(4, 172, 113);
+            border-radius: 16px;
+            line-height: 30px;
+            font-size: 12px;
+            border: 1px solid rgb(4, 172, 113);
+        }
+
+        /*文章底部版权信息*/
+        .copyInfo {
+            text-align: center;
+            padding: 20px 0 40px;
+            font-size: 12px;
+            color: #999;
+            line-height: 18px;
+            border-bottom: 1px dotted #ddd;
+        }
+        .copyInfo .theEnd {
+            font-size: 24px;
+            color: #333;
+            line-height: 36px;
+        }
+        .mt10 {
+            margin-top: 10px;
+        }
+        .copyInfo .channelSite {
+            margin: 0 5px;
+            color: #5079d9;
+        }
+        .copyInfo a{text-decoration: none;}
+
+        .articleDetail img {
+            margin: 0 0 8px 0;
+            max-width: 100%;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body style="background: #e9ecf3;">
+
+
+<div class="page">
+    <div class="articleImg">
+        <div class="textBox">
+            <h1>[[${articleTitle}]]</h1>
+            <div class="moreInfo">[[${articleAuthor}]]</div>
+        </div>
+        <div class="overlay"></div>
+        <!--   <div class="img" style="background:url('[[${coverImage}]]') no-repeat center; background-size:cover;"></div>-->
+        <img class="img"  th:src="${materialUrl}" style="display:block;background-size:cover;">
+    </div>
+    <!--分类-->
+    <div class="footerInfo top" >
+        <a   class="iconSpan" target="_blank">[[${categoryName}]]</a>
+    </div>
+    <!--文章正文-->
+    <div class="articleDetail">
+        [(${content})]
+    </div>
+    <!--文章来源版权信息-->
+    <div class="copyInfo">
+        <p class="theEnd"><span>-</span><b>THE END</b><span>-</span></p>
+        <div class="mt10">
+            <p>版权声明：本文仅代表作者观点，不代表平台立场。</p>
+            <p><a th:href="${articleLink}" title="查看原文" class="channelSite jumpHref">[ 查看原文 ]</a></p>
+        </div>
+    </div>
+
+    <a class="to-top" title=""  style="position: fixed; right: 25px; bottom: 50px; cursor: pointer; display: block;" data-original-title="点击返回顶部"  ></a>
+
+   <!-- <div id="SOHUCS"  th:sid="${id}"></div>-->
+    <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+    <script type="text/javascript">
+        window.changyan.api.config({
+            appid: 'cyuiRxL9X',
+            conf: '55e9ed6e5af85101aa2df4267ed012cd'
+        });
+    </script>
+
+</div>
+<!--百度自动推送-->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+<!--百度统计-->
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?065d63785bc5969ba048e6178619b603";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script>
+
+    $(function(){
+        var channelClass;
+        var channelSite = $('#channelSite').attr('data-site');
+        if(channelSite){
+            channelSite = $('#channelSite').attr('data-site-name');
+        }
+        switch (channelSite)
+        {
+            case '一个':
+                channelClass = 'one';
+                break;
+            case '少数派':
+                channelClass = 'sspai';
+                break;
+            case '十五言':
+                channelClass = 'yan15';
+                break;
+            case '站酷':
+                channelClass = 'zcool';
+                break;
+            case '真实故事':
+                channelClass = 'zhenshigushi';
+                break;
+            case '虎嗅':
+                channelClass = 'huxiu';
+                break;
+            case '差评':
+                channelClass = 'chaping';
+                break;
+            case 'NGA':
+                channelClass = 'NGA';
+                break;
+            case '好奇心日报':
+                channelClass = 'haoqixin';
+                break;
+            case '知乎':
+                channelClass = 'zhihu';
+                break;
+            case '果壳':
+                channelClass = 'guoke';
+                break;
+            case '今日头条':
+                channelClass = 'toutiao';
+                break;
+            case '36 氪':
+                channelClass = 'kr36';
+                break;
+            case '大象公会':
+                channelClass = 'dxgh';
+                break;
+            case '界面':
+                channelClass = 'jiemian';
+                break;
+            case '新世相':
+                channelClass = 'xinshixiang';
+                break;
+            case '豆瓣':
+                channelClass = 'douban';
+                break;
+            case '数字尾巴':
+                channelClass = 'dgtle';
+                break;
+            case '网易':
+                channelClass = 'wangyi';
+                break;
+            case '新浪':
+                channelClass = 'sina';
+                break;
+            case '简书':
+                channelClass = 'jianshu';
+                break;
+            case '极客公园':
+                channelClass = 'geekpark';
+                break;
+            case 'PingWest 品玩':
+                channelClass = 'pinwan';
+                break;
+            case '悦cms':
+                channelClass = 'yuecms';
+                break;
+        }
+        $('#channelSite').addClass(channelClass);
+    });
+
+    //跳转
+    $(function() {
+        function jumpHref(count,_href) {
+            window.setTimeout(function(){
+                count--;
+                if(count > 0) {
+                    $('#jumpCount').html(count);
+                    jumpHref(count,_href);
+                } else {
+                    location.href = _href;
+                }
+            }, 1000);
+        }
+
+        $('.jumpHref').on('click',function(){
+            var _href = $(this).attr('data-href');
+            var _website = $(this).attr('data-site-name');
+            if(isNotEmpty(_website)&&_website!=""){
+                var _hrefHtml = '<div class="jumpHrefGrid"><div class="hrefGroup"><h4>即将离开本站，跳转至'+ _website +'</h4><p><span id="jumpCount">5</span>秒后自动跳转</p><p><a class="btn" href="'+ _href +'">立即前往</a></p></div></div>';
+                $('body').append(_hrefHtml);
+                jumpHref(5,_href);
+            }else{
+                var _hrefHtml = '<div class="jumpHrefGrid"><div class="hrefGroup"><h4>即将离开本站，跳转至原文</h4><p><span id="jumpCount">5</span>秒后自动跳转</p><p><a class="btn" href="'+ _href +'">立即前往</a></p></div></div>';
+                $('body').append(_hrefHtml);
+                jumpHref(5,_href);
+                return false;
+            }
+
+        });
+    });
+</script>
+
+</body>
+</html>

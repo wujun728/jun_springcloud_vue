@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.mapper.CityInfoMapper">
+    
+    <resultMap type="CityInfo" id="CityInfoResult">
+        <result property="cityCode"    column="city_code"    />
+        <result property="cityName"    column="city_name"    />
+        <result property="provinceId"    column="province_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCityInfoVo">
+        select city_code, city_name, province_id, update_by, create_time, update_time from t_city_info
+    </sql>
+
+    <select id="selectCityInfoList" parameterType="CityInfo" resultMap="CityInfoResult">
+        <include refid="selectCityInfoVo"/>
+        <where>  
+            <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
+            <if test="provinceId != null  and provinceId != ''"> and province_id like concat('%', #{provinceId}, '%')</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
+            <if test="createTime != null "> and create_time like concat('%', #{createTime}, '%')</if>
+            <if test="updateTime != null "> and update_time like concat('%', #{updateTime}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCityInfoById" parameterType="String" resultMap="CityInfoResult">
+        <include refid="selectCityInfoVo"/>
+        where city_code = #{cityCode}
+    </select>
+        
+    <insert id="insertCityInfo" parameterType="CityInfo">
+        insert into t_city_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cityCode != null  and cityCode != ''">city_code,</if>
+            <if test="cityName != null  and cityName != ''">city_name,</if>
+            <if test="provinceId != null  and provinceId != ''">province_id,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cityCode != null  and cityCode != ''">#{cityCode},</if>
+            <if test="cityName != null  and cityName != ''">#{cityName},</if>
+            <if test="provinceId != null  and provinceId != ''">#{provinceId},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCityInfo" parameterType="CityInfo">
+        update t_city_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cityName != null  and cityName != ''">city_name = #{cityName},</if>
+            <if test="provinceId != null  and provinceId != ''">province_id = #{provinceId},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where city_code = #{cityCode}
+    </update>
+
+    <delete id="deleteCityInfoById" parameterType="String">
+        delete from t_city_info where city_code = #{cityCode}
+    </delete>
+
+    <delete id="deleteCityInfoByIds" parameterType="String">
+        delete from t_city_info where city_code in 
+        <foreach item="cityCode" collection="array" open="(" separator="," close=")">
+            #{cityCode}
+        </foreach>
+    </delete>
+    
+</mapper>

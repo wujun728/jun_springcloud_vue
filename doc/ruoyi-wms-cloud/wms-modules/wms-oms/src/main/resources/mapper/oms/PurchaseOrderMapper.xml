@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wms.oms.mapper.PurchaseOrderMapper">
+
+    <resultMap type="com.wms.oms.domain.PurchaseOrder" id="PurchaseOrderResult">
+        <result property="id"    column="id"    />
+        <result property="sn"    column="sn"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="buyDate"    column="buy_date"    />
+        <result property="billDate"    column="bill_date"    />
+        <result property="inventoryType"    column="inventory_type"    />
+        <result property="inventoryStatus"    column="inventory_status"    />
+        <result property="discountRate"    column="discount_rate"    />
+        <result property="discountAmount"    column="discount_amount"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="tenantId"    column="tenant_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <association property="supplier" javaType="com.wms.oms.domain.Supplier"  resultMap="SupplierResult"/>
+        <collection property="purchaseOrderItemList" ofType="com.wms.oms.domain.PurchaseOrderItem" resultMap="PurchaseOrderItemResult"/>
+    </resultMap>
+
+    <resultMap type="com.wms.oms.domain.Supplier" id="SupplierResult">
+        <result property="supplierName"    column="supplier_name"    />
+    </resultMap>
+
+
+    <resultMap type="com.wms.oms.domain.PurchaseOrderItem" id="PurchaseOrderItemResult">
+        <result property="id"    column="item_id"    />
+        <result property="purchaseOrderId"    column="purchase_order_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="skuId"    column="sku_id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="price"    column="price"    />
+        <result property="qty"    column="qty"    />
+        <result property="discountRate"    column="discount_rate"    />
+        <result property="discountAmount"    column="discount_amount"    />
+        <result property="amount"    column="amount"    />
+        <result property="memo"    column="memo"    />
+    </resultMap>
+
+
+    <sql id="selectPurchaseOrderListVo">
+        SELECT
+            wpo.id,
+            wpo.sn,
+            wpo.supplier_id,
+            wpo.buy_date,
+            wpo.bill_date,
+            wpo.inventory_type,
+            wpo.inventory_status,
+            wpo.discount_rate,
+            wpo.discount_amount,
+            wpo.total_amount,
+            wpo.del_flag,
+            wpo.tenant_id,
+            wpo.create_by,
+            wpo.create_time,
+            wpo.update_by,
+            wpo.update_time,
+            wpo.remark
+        FROM
+            wms_purchase_order AS wpo LEFT JOIN `wms_supplier` ws ON wpo.`supplier_id` = ws.`id`
+    </sql>
+
+    <sql id="selectPurchaseOrderVo">
+        SELECT
+            wpo.id,
+            wpo.sn,
+            wpo.supplier_id,
+            wpo.buy_date,
+            wpo.bill_date,
+            wpo.inventory_type,
+            wpo.inventory_status,
+            wpo.discount_rate,
+            wpo.discount_amount,
+            wpo.total_amount,
+            wpo.del_flag,
+            wpo.tenant_id,
+            wpo.create_by,
+            wpo.create_time,
+            wpo.update_by,
+            wpo.update_time,
+            wpo.remark,
+            wpoi.id AS item_id,
+            wpoi.sku_id,
+            wpoi.product_id,
+            wpoi.qty,
+            wpoi.amount,
+            wpoi.price,
+            wpoi.warehouse_id,
+            wpoi.discount_amount,
+            wpoi.discount_rate,
+            wpoi.remark
+        FROM
+            wms_purchase_order AS wpo LEFT JOIN wms_supplier AS ws ON wpo.supplier_id = ws.id
+                                      LEFT JOIN wms_purchase_order_item AS wpoi ON wpo.id = wpoi.purchase_order_id
+    </sql>
+
+
+    <select id="selectList" resultMap="PurchaseOrderResult">
+        <include refid="selectPurchaseOrderListVo"></include>
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="selectById" resultMap="PurchaseOrderResult">
+        <include refid="selectPurchaseOrderVo"></include>
+        WHERE wpo.id = #{id}
+    </select>
+
+
+
+</mapper>

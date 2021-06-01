@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增产品类别')"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-commoditycategory-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label"> 父级id：</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input id="treeId" name="categoryParid" type="hidden" th:value="${commodityCategory?.categoryId}"/>
+                    <input class="form-control" type="text" onclick="selectCommoditycategoryTree()" id="treeName"
+                           readonly="true" th:value="${commodityCategory?.categoryName}">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>类别名称：</label>
+            <div class="col-sm-8">
+                <input name="categoryName" class="form-control" type="text" required maxlength="10">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>类别属性：</label>
+            <div class="col-sm-8">
+                <select name="categoryAttribute" class="form-control m-b"
+                        th:with="type=${@dict.getType('t_category_attribute')}" required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>排序：</label>
+            <div class="col-sm-8">
+                <input name="zebraOrder" class="form-control" type="text" required maxlength="2" isNumber="isNumber">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span
+                    style="color: red;">*</span>类别icon：</label>
+            <div class="col-sm-8">
+                <input class="file" type="file" multiple data-min-file-count="1"
+                       accept="image/*" data-theme="fas" id="pic_file" name="pic_file">
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：请上传1:1比例图片</span>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script type="text/javascript">
+    var prefix = ctx + "bussiness/commoditycategory"
+    $("#form-commoditycategory-add").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var pic_file = $("#pic_file").val();
+            if (!pic_file) {
+                $.modal.alertWarning("类别icon。");
+                return;
+            }
+            $.operate.save(prefix + "/add", $('#form-commoditycategory-add').serialize());
+        }
+    }
+
+    /*产品类别-新增-选择父部门树*/
+    function selectCommoditycategoryTree() {
+        var options = {
+            title: '产品类别选择',
+            width: "380",
+            url: prefix + "/selectCommoditycategoryTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowLastLevel(tree, true)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+    }
+</script>
+</body>
+</html>

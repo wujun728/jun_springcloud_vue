@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.cms.mapper.CmsArticleContentMapper">
+    
+    <resultMap type="CmsArticleContent" id="CmsArticleContentResult">
+        <result property="id"    column="id"    />
+        <result property="content"    column="content"    />
+        <result property="contentMarkdownSource"    column="content_markdown_source"    />
+    </resultMap>
+
+    <sql id="selectCmsArticleContentVo">
+        select id, content, content_markdown_source from cms_article_content
+    </sql>
+
+    <select id="selectCmsArticleContentList" parameterType="CmsArticleContent" resultMap="CmsArticleContentResult">
+        <include refid="selectCmsArticleContentVo"/>
+        <where>  
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="contentMarkdownSource != null  and contentMarkdownSource != ''"> and content_markdown_source = #{contentMarkdownSource}</if>
+        </where>
+    </select>
+    
+    <select id="selectCmsArticleContentById" parameterType="String" resultMap="CmsArticleContentResult">
+        <include refid="selectCmsArticleContentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCmsArticleContent" parameterType="CmsArticleContent">
+        insert into cms_article_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="contentMarkdownSource != null  and contentMarkdownSource != ''">content_markdown_source,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="contentMarkdownSource != null  and contentMarkdownSource != ''">#{contentMarkdownSource},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmsArticleContent" parameterType="CmsArticleContent">
+        update cms_article_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="contentMarkdownSource != null  and contentMarkdownSource != ''">content_markdown_source = #{contentMarkdownSource},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCmsArticleContentById" parameterType="String">
+        delete from cms_article_content where id = #{id}
+    </delete>
+
+    <delete id="deleteCmsArticleContentByIds" parameterType="String">
+        delete from cms_article_content where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

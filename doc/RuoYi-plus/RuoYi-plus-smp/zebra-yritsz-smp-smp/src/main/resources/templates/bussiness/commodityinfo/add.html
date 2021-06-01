@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增产品信息')"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-commodityinfo-add">
+        <h4 class="form-header h4">商品信息</h4>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>所属商户：</label>
+            <div class="col-sm-4">
+                <select id="merchantId" class="form-control" name="merchantId">
+                    <option th:each="post:${mts}"
+                            th:value="${post.merchantId}"
+                            th:text="${post.merchantName}"></option>
+                </select>
+            </div>
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>产品名称：</label>
+            <div class="col-sm-4">
+                <input name="commodityName" class="form-control" type="text" required maxlength="50">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>产品简介：</label>
+            <div class="col-sm-4">
+                <textarea name="commodityBrief" class="form-control" required maxlength="100"></textarea>
+            </div>
+            <label class="col-sm-2 control-label">产品详情：</label>
+            <div class="col-sm-4">
+                <textarea name="commodityIntroduce" class="form-control" required maxlength="1000"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品费用(分)：</label>
+            <div class="col-sm-4">
+                <input name="commodityMoeny" class="form-control" type="text" required isMoney="isMoney" maxlength="8">
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：规格存在费用时，该项为市面值非支付金额</span>
+            </div>
+            <label class="col-sm-2 control-label">商品类型：</label>
+            <div class="col-sm-4">
+                <select name="commodityType" class="form-control m-b"
+                        th:with="type=${@dict.getType('t_commodity_type')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品运费(分)：</label>
+            <div class="col-sm-4">
+                <input placeholder="输入0为免费" name="commodityFreight" class="form-control" type="text" required
+                       isMoney="isMoney" maxlength="8">
+            </div>
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品属性：</label>
+            <div class="col-sm-4">
+                <select name="commodityAttribute" class="form-control m-b"
+                        th:with="type=${@dict.getType('t_merchant_attribute')}" required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品状态：</label>
+            <div class="col-sm-4">
+                <div class="radio-box" th:each="dict : ${@dict.getType('t_merchant_status')}">
+                    <input type="radio" th:id="${'commodityStatus_' + dict.dictCode}" name="commodityStatus"
+                           th:value="${dict.dictValue}" th:checked="${dict.isDefault}" required>
+                    <label th:for="${'commodityStatus_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+                <span class="help-block m-b-none"><i
+                        class="fa fa-info-circle"></i> 提示：普通商户添加商品需等待系统审核，特约商户无需审核直接通过</span>
+            </div>
+
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>商品类别：</label>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <input id="treeId" name="categoryId" type="hidden" th:value="${commodityCategory?.categoryId}"/>
+                    <input class="form-control" type="text" onclick="selectCommoditycategoryTree()" id="treeName"
+                           readonly="true" th:value="${commodityCategory?.categoryName}" required>
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>库存总量：</label>
+            <div class="col-sm-4">
+                <input name="commodityCount" class="form-control" type="text" required maxlength="5"
+                       isNumber="isNumber">
+            </div>
+            <label class="col-sm-2 control-label"><span style="color: red; ">*</span>排序：</label>
+            <div class="col-sm-4">
+                <input name="zebraOrder" class="form-control" type="text" required maxlength="3" isNumber="isNumber">
+            </div>
+        </div>
+        <h4 class="form-header h4">商品规格</h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" class="btn btn-white btn-sm" onclick="addColumn()"><i class="fa fa-plus"> 增加</i>
+                </button>
+                <button type="button" class="btn btn-white btn-sm" onclick="delColumn()"><i class="fa fa-minus">
+                    删除</i></button>
+                <div class="col-sm-12 select-table table-striped">
+                    <table id="bootstrap-table"></table>
+                </div>
+            </div>
+        </div>
+        <div class="form-group"></div>
+        <h4 class="form-header h4">产品图片</h4>
+        <div class="row">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span style="color: red; ">*</span>产品图片：</label>
+                <div class="col-sm-4">
+                    <input class="file" type="file" multiple data-min-file-count="1"
+                           accept="image/*" data-theme="fas" id="pic_file" name="pic_file">
+                    <span class="help-block m-b-none"><i
+                            class="fa fa-info-circle"></i> 提示：按照4:3比例上传，否则会影响用户体验</span>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script th:src="@{/js/jquery.tmpl.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "bussiness/commodityinfo"
+    $("#form-commodityinfo-add").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            if (!$("#pic_file").val()) {
+                $.modal.alertWarning("请上传商品图片");
+                return;
+            }
+            var formdata = new FormData(document.getElementById("form-commodityinfo-add"));
+            $.operate.saveImg(prefix + "/add", formdata);
+        }
+    }
+
+    /*产品类别-新增-选择父部门树*/
+    function selectCommoditycategoryTree() {
+        var options = {
+            title: '产品类别选择',
+            width: "380",
+            url: ctx + "bussiness/commoditycategory/selectCommoditycategoryTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree, true)) {
+            var body = layer.getChildFrame('body', index);
+            var goodId = body.find('#treeId').val();
+            $("#treeId").val(goodId);
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+    }
+</script>
+
+<script th:inline="javascript">
+    $(function () {
+        var options = {
+            pagination: false,
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            sidePagination: "client",
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'specsId',
+                align: 'center',
+                title: '规格类型',
+                formatter: function (value, row, index) {
+                    var data = [{index: index, type: value}];
+                    return $("#goodsTypeTpl").tmpl(data).html();
+                }
+            },
+                {
+                    field: 'specsName',
+                    align: 'center',
+                    title: "规格名称",
+                    formatter: function (value, row, index) {
+                        var html = $.common.sprintf("<input maxlength='10' required class='form-control' type='text' name='goods[%s].name' value='%s'>", index, value);
+                        return html;
+                    }
+                },
+                {
+                    field: 'specsCount',
+                    align: 'center',
+                    title: '规格库存',
+                    formatter: function (value, row, index) {
+                        var html = $.common.sprintf("<input  maxlength='5'  onkeyup='value=value.replace(/[^\\d]/g,\"\")'   class='form-control' type='text' name='goods[%s].specsCount' value='%s'>", index, value);
+                        return html;
+                    }
+                },
+                {
+                    field: 'specsMoeny',
+                    align: 'center',
+                    title: '规格价格(分)',
+                    formatter: function (value, row, index) {
+                        var html = $.common.sprintf("<input  maxlength='8'  onkeyup='value=value.replace(/[^\\d]/g,\"\")' class='form-control' type='text' name='goods[%s].specsMoeny' value='%s'>", index, value);
+                        return html;
+                    }
+                },
+                {
+                    field: 'specsImg',
+                    align: 'center',
+                    title: '规格图片',
+                    formatter: function (value, row, index) {
+                        var html = $.common.sprintf("<input class='form-control' type='file' name='goods[%s].specsImg' value='%s'", index, value);
+                        return html;
+                    }
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+    /* 主子表-提交 */
+    function submitHandler(index, layero) {
+        var data = $("#form-add").serializeArray();
+        $.operate.saveModal("/demo/operate/customer/add", data);
+    }
+
+    var index = 1;
+
+    function no_records() {
+        var btSelectItems = $("input[name='btSelectItem']");
+        if (btSelectItems.length == 0) {
+            $(".no-records-found").show();
+            return;
+        }
+    }
+
+    function addColumn() {
+        var index_l = index - 1;
+        var data = [{index: index_l, type: index}];
+        var selectInfo = $("#goodsTypeTpl").tmpl(data).html();
+        var html = ' <tr data-index="' + index + '" class=""><td class="bs-checkbox "><input data-index="' + index + '" name="btSelectItem" type="checkbox" class="valid"></td><td style="text-align: center; "> ' + selectInfo + '</td><td style="text-align: center; "><input maxlength="10" required="" class="form-control" type="text" name="goods[' + index_l + '].name" value=""></td><td style="text-align: center; "><input maxlength="5" onkeyup="value=value.replace(/[^\\d]/g,&quot;&quot;)" class="form-control" type="text" name="goods[' + index_l + '].specsCount" value=""></td><td style="text-align: center; "><input maxlength="8" onkeyup="value=value.replace(/[^\\d]/g,&quot;&quot;)" class="form-control" type="text" name="goods[' + index_l + '].specsMoeny" value=""></td><td style="text-align: center; "><input class="form-control" type="file" name="goods[' + index_l + '].specsImg" value="" <="" td=""></td></tr>';
+        $(".no-records-found").hide();
+        $(".no-records-found").parent().append(html);
+        index++;
+        no_records();
+    }
+
+    function delColumn() {
+        var btSelectItems = $("input[name='btSelectItem']");
+        if (btSelectItems.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        var check_f = false;
+        btSelectItems.each(function () {
+            if (this.checked) {
+                $(this).parent().parent().remove();
+                check_f = true;
+            }
+        });
+        if (!check_f) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        no_records();
+    }
+
+    $(function () {
+        $("input[name='btSelectAll']").hide();
+        addColumn();
+    })
+</script>
+
+</body>
+</html>
+
+<!-- 商品类型 -->
+<script id="goodsTypeTpl" type="text/x-jquery-tmpl">
+<div>
+ <select class='form-control' name='goods[${index}].specsId'>
+        <option th:each="post:${specsTypeList}"
+                th:value="${post.specsTypeId}"
+                th:text="${post.specsType}"></option>
+    </select>
+</div>
+
+
+
+
+
+
+
+
+
+
+</script>

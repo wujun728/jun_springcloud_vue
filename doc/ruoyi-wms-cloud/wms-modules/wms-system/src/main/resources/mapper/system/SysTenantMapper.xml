@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wms.system.mapper.SysTenantMapper">
+
+    <resultMap type="SysTenant" id="SysTenantResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysTenantVo">
+        select id, name, del_flag, nick_name, phone, create_by, create_time, update_by, update_time, remark from sys_tenant
+    </sql>
+
+</mapper>

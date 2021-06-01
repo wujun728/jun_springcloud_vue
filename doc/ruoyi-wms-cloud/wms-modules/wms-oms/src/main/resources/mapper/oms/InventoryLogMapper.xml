@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wms.oms.mapper.InventoryLogMapper">
+
+    <resultMap type="InventoryLog" id="InventoryLogResult">
+        <result property="id"    column="id"    />
+        <result property="sn"    column="sn"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="inventoryType"    column="inventory_type"    />
+        <result property="skuId"    column="sku_id"    />
+        <result property="qty"    column="qty"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="tenantId"    column="tenant_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectInventoryLogVo">
+        select id, sn, warehouse_id, inventory_type, sku_id, qty, del_flag, tenant_id, create_by, create_time, update_by, update_time, remark from wms_inventory_log
+    </sql>
+
+</mapper>

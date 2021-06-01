@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zebra.bussiness.mapper.ActivityCommodityMapper">
+    
+    <resultMap type="ActivityCommodity" id="ActivityCommodityResult">
+        <result property="id"    column="id"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="commodityId"    column="commodity_id"    />
+        <result property="commodityCount"    column="commodity_count"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="buyersNumber"    column="buyers_number"    />
+        <result property="preferential"    column="preferential"    />
+        <result property="examineStatus"    column="examine_status"    />
+        <result property="examineDesc"    column="examine_desc"    />
+        <result property="zebraOrder"    column="zebra_order"    />
+        <result property="merchantId"    column="merchant_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="dataVerFlag"    column="data_ver_flag"    />
+    </resultMap>
+
+    <sql id="selectActivityCommodityVo">
+        select id, activity_id, commodity_id, commodity_count, start_time, end_time, buyers_number, preferential, examine_status, examine_desc, zebra_order, merchant_id, create_time, update_time, update_by, data_ver_flag from t_activity_commodity
+    </sql>
+
+    <select id="selectActivityCommodityList" parameterType="ActivityCommodity" resultMap="ActivityCommodityResult">
+        <include refid="selectActivityCommodityVo"/>
+        <where>  
+            <if test="id != null  and id != ''"> and id = #{id}</if>
+            <if test="activityId != null  and activityId != ''"> and activity_id = #{activityId}</if>
+            <if test="commodityId != null  and commodityId != ''"> and commodity_id = #{commodityId}</if>
+            <if test="examineStatus != null "> and examine_status = #{examineStatus}</if>
+            <if test="merchantId != null  and merchantId != ''"> and merchant_id = #{merchantId}</if>
+        </where>
+    </select>
+    
+    <select id="selectActivityCommodityById" parameterType="String" resultMap="ActivityCommodityResult">
+        <include refid="selectActivityCommodityVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActivityCommodity" parameterType="ActivityCommodity">
+        insert into t_activity_commodity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="activityId != null  and activityId != ''">activity_id,</if>
+            <if test="commodityId != null  and commodityId != ''">commodity_id,</if>
+            <if test="commodityCount != null ">commodity_count,</if>
+            <if test="startTime != null ">start_time,</if>
+            <if test="endTime != null ">end_time,</if>
+            <if test="buyersNumber != null ">buyers_number,</if>
+            <if test="preferential != null ">preferential,</if>
+            <if test="examineStatus != null ">examine_status,</if>
+            <if test="examineDesc != null  and examineDesc != ''">examine_desc,</if>
+            <if test="zebraOrder != null ">zebra_order,</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="dataVerFlag != null ">data_ver_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="activityId != null  and activityId != ''">#{activityId},</if>
+            <if test="commodityId != null  and commodityId != ''">#{commodityId},</if>
+            <if test="commodityCount != null ">#{commodityCount},</if>
+            <if test="startTime != null ">#{startTime},</if>
+            <if test="endTime != null ">#{endTime},</if>
+            <if test="buyersNumber != null ">#{buyersNumber},</if>
+            <if test="preferential != null ">#{preferential},</if>
+            <if test="examineStatus != null ">#{examineStatus},</if>
+            <if test="examineDesc != null  and examineDesc != ''">#{examineDesc},</if>
+            <if test="zebraOrder != null ">#{zebraOrder},</if>
+            <if test="merchantId != null  and merchantId != ''">#{merchantId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="dataVerFlag != null ">#{dataVerFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivityCommodity" parameterType="ActivityCommodity">
+        update t_activity_commodity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activityId != null  and activityId != ''">activity_id = #{activityId},</if>
+            <if test="commodityId != null  and commodityId != ''">commodity_id = #{commodityId},</if>
+            <if test="commodityCount != null ">commodity_count = #{commodityCount},</if>
+            <if test="startTime != null ">start_time = #{startTime},</if>
+            <if test="endTime != null ">end_time = #{endTime},</if>
+            <if test="buyersNumber != null ">buyers_number = #{buyersNumber},</if>
+            <if test="preferential != null ">preferential = #{preferential},</if>
+            <if test="examineStatus != null ">examine_status = #{examineStatus},</if>
+            <if test="examineDesc != null  and examineDesc != ''">examine_desc = #{examineDesc},</if>
+            <if test="zebraOrder != null ">zebra_order = #{zebraOrder},</if>
+            <if test="merchantId != null  and merchantId != ''">merchant_id = #{merchantId},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="dataVerFlag != null ">data_ver_flag = #{dataVerFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActivityCommodityById" parameterType="String">
+        delete from t_activity_commodity where id = #{id}
+    </delete>
+
+    <delete id="deleteActivityCommodityByIds" parameterType="String">
+        delete from t_activity_commodity where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

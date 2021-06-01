@@ -1,0 +1,83 @@
+#用于部署业务服务
+version: '3'
+services:
+  #  认证模块
+  wms-auth:
+    image: registry.cn-hangzhou.aliyuncs.com/zzm_docker/wms:wms-auth-1.0.0
+    container_name: wms-auth
+    restart: always
+    ports:
+      - 9200:9200
+    volumes:
+      - D:\docker\wms\log\wms-auth:/var
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+#    depends_on:
+#      - mysql
+#      - redis
+#      - nacos
+    external_links:
+      - redis:redis #可以用redis这个域名访问redis服务
+      - mysql:db #可以用db这个域名访问mysql服务
+      - nacos:nacos #可以用nacos这个域名访问nacos服务
+  #  网关模块
+  wms-gateway:
+    image: registry.cn-hangzhou.aliyuncs.com/zzm_docker/wms:wms-gateway-1.0.0
+    container_name: wms-gateway
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - D:\docker\wms\log\wms-gateway:/var
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+#    depends_on:
+#      - mysql
+#      - redis
+#      - nacos
+    external_links:
+      - redis:redis #可以用redis这个域名访问redis服务
+      - mysql:db #可以用db这个域名访问mysql服务
+      - nacos:nacos #可以用nacos这个域名访问nacos服务
+  #   代码生成
+  wms-gen:
+    image: registry.cn-hangzhou.aliyuncs.com/zzm_docker/wms:wms-gen-1.0.0
+    container_name: wms-gen
+    restart: always
+    ports:
+      - 9202:9202
+    volumes:
+      - /mydata/devicemag/log/wms-gen:/var
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    #    depends_on:
+    #      - mysql
+    #      - redis
+    #      - nacos
+    external_links:
+      - redis:redis #可以用redis这个域名访问redis服务
+      - mysql:db #可以用db这个域名访问mysql服务
+      - nacos:nacos #可以用nacos这个域名访问nacos服务
+  # 系统模块
+  wms-system:
+    image: registry.cn-hangzhou.aliyuncs.com/zzm_docker/wms:wms-system-1.0.0
+    container_name: wms-system
+    restart: always
+    ports:
+      - 9201:9201
+    volumes:
+      - D:\docker\wms\log\wms-system:/var
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+#    depends_on:
+#      - mysql
+#      - redis
+#      - nacos
+    external_links:
+      - redis:redis #可以用redis这个域名访问redis服务
+      - mysql:db #可以用db这个域名访问mysql服务
+      - nacos:nacos #可以用nacos这个域名访问nacos服务
