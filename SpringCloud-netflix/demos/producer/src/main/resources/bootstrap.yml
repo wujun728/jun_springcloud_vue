@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: producer
+  cloud:
+    config:
+      name: eureka-producer
+      label: master
+      profile: test
+      enabled: true
+      fail-fast: false
+      retry:
+        max-attempts: 6
+    bus:
+      trace:
+        enabled: true

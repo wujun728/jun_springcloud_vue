@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pers.zb</groupId>
+    <artifactId>sea-springcloud</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>sea-shopping</module>
+    </modules>
+
+
+    <!-- 使用阿里云maven仓库 ， 建议在本地的maven仓库的settings.xml中配置aliyun的maven，一劳永逸；-->
+    <repositories>
+        <repository>
+            <id>aliyun-maven-repo</id>
+            <name>aliyun-maven-repo</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+</project>

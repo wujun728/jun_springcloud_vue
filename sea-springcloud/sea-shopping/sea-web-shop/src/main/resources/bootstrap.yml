@@ -1,0 +1,32 @@
+# spring.cloud.config.uri 参考 https://segmentfault.com/a/1190000006138698
+spring:
+  cloud:
+    config:
+      # 配置中心服务地址。具体配置请查看 \sea-server-config\src\main\resources\application.yml中的config配置。
+      # 【uri注意点】：
+      #    1、uri默认值为 http://localhost:8888
+      #    2、如果在application.yml中配置spring.cloud.config信息，且uri地址的端口号非8888（自定义的端口号），则项目启动的时候，依然是访问的 http://localhost:8888（启动日志可以看出来），
+      #           这样就会造成一个问题，也就是config配置中心服务无法正常访问。毕竟实际开发中，端口号肯定是可以自定义的，而不是默认的8888端口，该如何解决呢？
+      #           那就是需要在 bootstrap.yml中进行config的配置（也就是在当前文件中），这样，就实现了自定义配置中心服务的端口号，配置中心服务才可正常访问。
+      #           至于bootstrap.yml与application.yml有什么区别，可阅读 https://www.cnblogs.com/fengli9998/p/7566807.html
+      # uri: http://localhost:8200  # 【注意】如果把config server集群化、高可用的话，一般都使用服务名来标识，而不是uri。如果基于服务名的话，需要配置下面的discovery。
+      discovery:
+        enabled: true # 开启Config服务发现支持
+        serviceId: config-server # 指定配置中心服务名,也就是config server端spring.application.name的值，具体信息请查看 \sea-server-config\src\main\resources\application.yml
+      label: master # 配置仓库的分支
+      profile: dev # 开发环境
+  rabbitmq: # MQ消息总线。当git服务器上配置文件发生变化时，该配置作用是：用于接收config server发出的消息，这样就实现了所有config client动态刷新bean属性
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# 【必须注意】：
+#       在对config server做集群、高可用的时候，eureka的配置必须在bootstrap.yml文件中配置，不能在application.yml中配置，否则会启动报错，无法获取eureka服务；
+#       当然，如果没有对config server做高可用的话（也就是单实例），eureka可以配置在application.yml中
+eureka:
+  instance:
+    hostname: localhost # 服务消费者应用所在的主机(本地测试的话，就使用localhost即可；当然你也可以在host文件中配置一个虚拟域名；但必须要在本地浏览器中可以访问才行)
+  client:
+    service-url:
+      defaultZone: http://server.eureka.slave1.com:18761/eureka,http://server.eureka.slave2.com:28761/eureka # 指定eureka服务器集群列表地址

@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: sea-web-shop # 应用名称（如果项目自身引入了 spring-cloud-config配置中心的话，配置文件的名称最好用这个应用名称来命名）
+
+# 【开启断路器】：
+#         feign是自带断路器hystrix的，只是没有默认打开hystrix。需要在配置文件中配置打开，将feign.hystrix.enabled设置为true，则hystrix断路器方可生效
+# 【是否配置了 feign.hystrix.enabled ，页面显示的异常信息是不同的】：
+#         1、如果配置了feign.hystrix.enabled，且值为false，则访问的时候，页面会报Connection refused的错误，比如：Connection refused: connect executing GET http://sea-service-user/person/1
+#         2、如果没有配置feign.hystrix.enabled，则访问的时候，页面会报客户端异常，比如：com.netflix.client.ClientException: Load balancer does not have available server for client: sea-service-user
+feign:
+  hystrix:
+    enabled: true
+
+turbine:
+  app-config: sea-web-shop # 指定要监控的应用名字；这里我就监控当前的消费者应用了
+  cluster-name-expression: new String("default") # 集群的名字
+  combine-host-port: true # 表示同一主机上的服务通过host和port的组合来进行区分，默认情况下是使用host来区分，这样会使本地调试有问题
+
+management:
+  security:
+    enabled: false # 关闭安全验证（或者设置用户名和密码）。客户端访问一些接口的时候，才不会出现：401 Unauthorized权限的错误 —— Full authentication is required to access this resource

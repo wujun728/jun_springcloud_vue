@@ -1,0 +1,32 @@
+#server:
+  #port: 8200 # 对config server做集群的话，在运行main方法的时候，就让用户手动指定端口号，实现动态扩容
+
+spring:
+  application:
+    name: config-server # 应用名称
+  cloud:
+    config: # 【知识点】：项目启动的时候，config配置中心并不会拉取远程git仓库的配置文件到本地，只有第一次访问的时候，才会远程拉取并存储到本地。
+      server:
+        git:
+          uri: https://gitee.com/zhoubang85/springcloud-config-test.git   # 配置git仓库地址
+          search-paths: config-dir   # 配置仓库路径
+          username: 账号不方便泄漏  # 访问git仓库的用户名
+          password: 密码不方便泄漏   # 访问git仓库的用户密码
+          basedir: c:\\config # 配置中心远程clone下来的配置文件所在的位置。目录不存在的话，系统会自动创建dir目录。默认情况下，克隆下来的文件保存在C:\Users\<当前用户>\AppData\Local\Temp目录下
+      label: master # 配置仓库的分支
+  rabbitmq: # MQ消息总线。配置中心要想动态更新所有config client的bean属性值的话，通过消息总线实现
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# 为了让config server实现集群、高可用，则需要配置eureka注册中心
+eureka:
+  instance:
+    hostname: localhost # 服务提供者应用所在的主机（本地测试的话，使用localhost或者127.0.0.1即可，或者在host文件中指定一个虚拟域名也可以）
+    lease-renewal-interval-in-seconds: 5 # 心跳时间，表示eureka client发送心跳给eureka server端的频率（缺省为30s）
+  client:
+    service-url:
+      defaultZone: http://server.eureka.slave1.com:18761/eureka,http://server.eureka.slave2.com:28761/eureka # 指定eureka服务器集群列表地址
+
+
