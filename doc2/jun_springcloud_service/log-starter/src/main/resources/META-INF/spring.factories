@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.cloud.log.autoconfigure.LogAutoConfiguration,\
-com.cloud.log.autoconfigure.LogAop

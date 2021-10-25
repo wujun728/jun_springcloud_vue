@@ -1,4 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.wms.system.api.factory.RemoteUserFallbackFactory,\
-  com.wms.system.api.factory.RemoteLogFallbackFactory, \
-  com.wms.system.api.factory.RemoteFileFallbackFactory

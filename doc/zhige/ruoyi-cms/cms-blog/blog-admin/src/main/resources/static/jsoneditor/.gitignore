@@ -1,9 +1,0 @@
-.idea
-*.iml
-.vscode
-build
-downloads
-node_modules
-*.zip
-npm-debug.log
-/.vs
