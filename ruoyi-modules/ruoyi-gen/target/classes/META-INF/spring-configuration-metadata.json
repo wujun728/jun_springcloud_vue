@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "gen",
+      "type": "com.ruoyi.gen.config.GenConfig",
+      "sourceType": "com.ruoyi.gen.config.GenConfig"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

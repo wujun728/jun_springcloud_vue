@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.ruoyi.common.security.handler.GlobalExceptionHandler,\
+  com.ruoyi.common.security.config.SecurityConfiguration

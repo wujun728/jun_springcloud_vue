@@ -1,0 +1,70 @@
+{
+  "groups": [
+    {
+      "name": "security.captcha",
+      "type": "com.ruoyi.gateway.config.properties.CaptchaProperties",
+      "sourceType": "com.ruoyi.gateway.config.properties.CaptchaProperties"
+    },
+    {
+      "name": "security.ignore",
+      "type": "com.ruoyi.gateway.config.properties.IgnoreWhiteProperties",
+      "sourceType": "com.ruoyi.gateway.config.properties.IgnoreWhiteProperties"
+    },
+    {
+      "name": "security.xss",
+      "type": "com.ruoyi.gateway.config.properties.XssProperties",
+      "sourceType": "com.ruoyi.gateway.config.properties.XssProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "security.captcha.category",
+      "type": "com.ruoyi.gateway.enums.CaptchaCategory",
+      "description": "验证码类别",
+      "sourceType": "com.ruoyi.gateway.config.properties.CaptchaProperties"
+    },
+    {
+      "name": "security.captcha.char-length",
+      "type": "java.lang.Integer",
+      "description": "字符验证码长度",
+      "sourceType": "com.ruoyi.gateway.config.properties.CaptchaProperties"
+    },
+    {
+      "name": "security.captcha.enabled",
+      "type": "java.lang.Boolean",
+      "description": "验证码开关",
+      "sourceType": "com.ruoyi.gateway.config.properties.CaptchaProperties"
+    },
+    {
+      "name": "security.captcha.number-length",
+      "type": "java.lang.Integer",
+      "description": "数字验证码位数",
+      "sourceType": "com.ruoyi.gateway.config.properties.CaptchaProperties"
+    },
+    {
+      "name": "security.captcha.type",
+      "type": "com.ruoyi.gateway.enums.CaptchaType",
+      "description": "验证码类型",
+      "sourceType": "com.ruoyi.gateway.config.properties.CaptchaProperties"
+    },
+    {
+      "name": "security.ignore.whites",
+      "type": "java.util.List<java.lang.String>",
+      "description": "放行白名单配置，网关不校验此处的白名单",
+      "sourceType": "com.ruoyi.gateway.config.properties.IgnoreWhiteProperties"
+    },
+    {
+      "name": "security.xss.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Xss开关",
+      "sourceType": "com.ruoyi.gateway.config.properties.XssProperties"
+    },
+    {
+      "name": "security.xss.exclude-urls",
+      "type": "java.util.List<java.lang.String>",
+      "description": "排除路径",
+      "sourceType": "com.ruoyi.gateway.config.properties.XssProperties"
+    }
+  ],
+  "hints": []
+}

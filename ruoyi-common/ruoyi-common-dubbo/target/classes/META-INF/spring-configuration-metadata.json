@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "dubbo.custom",
+      "type": "com.ruoyi.common.dubbo.properties.DubboCustomProperties",
+      "sourceType": "com.ruoyi.common.dubbo.properties.DubboCustomProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "dubbo.custom.log-level",
+      "type": "com.ruoyi.common.dubbo.enumd.RequestLogEnum",
+      "sourceType": "com.ruoyi.common.dubbo.properties.DubboCustomProperties"
+    },
+    {
+      "name": "dubbo.custom.request-log",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.ruoyi.common.dubbo.properties.DubboCustomProperties"
+    }
+  ],
+  "hints": []
+}
